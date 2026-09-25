@@ -1,0 +1,52 @@
+{
+  "suite_name": "AgriGuard-50-Question-Agronomy-AI-Benchmark",
+  "total_questions": 50,
+  "passed_questions": 50,
+  "overall_accuracy_percent": 100.0,
+  "average_latency_ms": 13.2,
+  "categories": {
+    "Crop Cultivation": {
+      "total": 7,
+      "passed": 7,
+      "accuracy_percent": 100.0,
+      "avg_latency_ms": 31.0
+    },
+    "Plant Pathology": {
+      "total": 8,
+      "passed": 8,
+      "accuracy_percent": 100.0,
+      "avg_latency_ms": 11.1
+    },
+    "Pest Management": {
+      "total": 7,
+      "passed": 7,
+      "accuracy_percent": 100.0,
+      "avg_latency_ms": 11.6
+    },
+    "Fertilizer & Nutrition": {
+      "total": 7,
+      "passed": 7,
+      "accuracy_percent": 100.0,
+      "avg_latency_ms": 10.4
+    },
+    "Irrigation & Water": {
+      "total": 7,
+      "passed": 7,
+      "accuracy_percent": 100.0,
+      "avg_latency_ms": 11.2
+    },
+    "Organic Farming": {
+      "total": 7,
+      "passed": 7,
+      "accuracy_percent": 100.0,
+      "avg_latency_ms": 17.1
+    },
+    "Out-of-Domain Rejection": {
+      "total": 7,
+      "passed": 7,
+      "accuracy_percent": 100.0,
+      "avg_latency_ms": 0.0
+    }
+  },
+  "timestamp": "2026-09-20T04:49:23Z"
+}

@@ -1,0 +1,78 @@
+{
+  "total_questions": 110,
+  "passed": 110,
+  "pass_rate_pct": 100.0,
+  "average_latency_ms": 16.7,
+  "categories": {
+    "A_PURE_AGRICULTURAL_KNOWLEDGE": {
+      "name": "Pure Agricultural Knowledge",
+      "total": 15,
+      "passed": 15,
+      "pass_rate_pct": 100.0,
+      "avg_latency_ms": 26.82
+    },
+    "B_SYMPTOM_BASED_REASONING": {
+      "name": "Symptom-Based Reasoning",
+      "total": 15,
+      "passed": 15,
+      "pass_rate_pct": 100.0,
+      "avg_latency_ms": 17.82
+    },
+    "C_IMAGE_DIAGNOSIS_GUARD": {
+      "name": "Image Diagnosis & Non-Leaf Guard",
+      "total": 10,
+      "passed": 10,
+      "pass_rate_pct": 100.0,
+      "avg_latency_ms": 14.53
+    },
+    "D_USER_FARM_MEMORY": {
+      "name": "User Farm & Scan Memory",
+      "total": 10,
+      "passed": 10,
+      "pass_rate_pct": 100.0,
+      "avg_latency_ms": 14.27
+    },
+    "E_ROLE_SPECIFIC_GROUNDING": {
+      "name": "Role-Specific Grounding",
+      "total": 10,
+      "passed": 10,
+      "pass_rate_pct": 100.0,
+      "avg_latency_ms": 20.03
+    },
+    "F_CHEMICAL_SAFETY": {
+      "name": "Chemical Safety & Treatments",
+      "total": 10,
+      "passed": 10,
+      "pass_rate_pct": 100.0,
+      "avg_latency_ms": 14.1
+    },
+    "G_OUT_OF_SCOPE_REJECTION": {
+      "name": "Out-of-Scope Rejection",
+      "total": 10,
+      "passed": 10,
+      "pass_rate_pct": 100.0,
+      "avg_latency_ms": 10.86
+    },
+    "H_MULTI_TURN_CONTINUITY": {
+      "name": "Multi-Turn Continuity",
+      "total": 10,
+      "passed": 10,
+      "pass_rate_pct": 100.0,
+      "avg_latency_ms": 14.14
+    },
+    "I_ADVERSARIAL_SAFETY": {
+      "name": "Adversarial & Safety Prompts",
+      "total": 10,
+      "passed": 10,
+      "pass_rate_pct": 100.0,
+      "avg_latency_ms": 14.76
+    },
+    "J_HONEST_UNCERTAINTY": {
+      "name": "Honest Uncertainty",
+      "total": 10,
+      "passed": 10,
+      "pass_rate_pct": 100.0,
+      "avg_latency_ms": 14.1
+    }
+  }
+}

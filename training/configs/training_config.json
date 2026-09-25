@@ -1,0 +1,49 @@
+{
+  "project": "AgriGuard AI",
+  "version": "1.0.0",
+  "leaf_validator": {
+    "model_name": "leaf-validator-v1",
+    "architecture": "RandomForest-FeatureEnsemble",
+    "n_estimators": 100,
+    "max_depth": 8,
+    "feature_dimensions": 24,
+    "blur_threshold": 50.0,
+    "dark_threshold": 38.0,
+    "min_leaf_ratio": 0.15,
+    "screen_moiré_threshold": 0.65,
+    "classes": ["non_leaf", "leaf"]
+  },
+  "disease_detection": {
+    "model_name": "disease-model-v1",
+    "architecture": "MobileNetV3-PlantPathology",
+    "input_resolution": 224,
+    "epochs": 15,
+    "batch_size": 16,
+    "learning_rate": 0.001,
+    "weight_decay": 0.0001,
+    "confidence_threshold": 0.65,
+    "entropy_threshold": 2.2,
+    "classes": [
+      "Rice___Brown_Spot",
+      "Rice___Leaf_Blast",
+      "Rice___Bacterial_Blight",
+      "Tomato___Early_blight",
+      "Tomato___Late_blight",
+      "Tomato___Bacterial_spot",
+      "Tomato___Yellow_Leaf_Curl_Virus",
+      "Potato___Early_blight",
+      "Potato___Late_blight",
+      "Corn_(maize)___Common_rust_",
+      "Corn_(maize)___Gray_leaf_spot",
+      "Cucumber___Downy_mildew",
+      "General___Powdery_mildew",
+      "General___Healthy"
+    ]
+  },
+  "dataset_split": {
+    "train_ratio": 0.70,
+    "val_ratio": 0.15,
+    "test_ratio": 0.15,
+    "random_seed": 42
+  }
+}

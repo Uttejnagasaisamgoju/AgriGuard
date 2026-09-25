@@ -1,0 +1,57 @@
+{
+  "id": "app.agriguard.mobile",
+  "name": "AgriGuard — Smart Farming & Crop Protection",
+  "short_name": "AgriGuard",
+  "description": "AI-powered smart agriculture platform with real-time crop disease detection, satellite GIS monitoring, field officer updates, and agricultural expert advisory.",
+  "start_url": "/?source=pwa&screen=login",
+  "scope": "/",
+  "display": "standalone",
+  "display_override": ["standalone", "fullscreen", "window-controls-overlay"],
+  "orientation": "portrait-primary",
+  "background_color": "#022c22",
+  "theme_color": "#064e3b",
+  "categories": ["agriculture", "productivity", "utilities"],
+  "icons": [
+    {
+      "src": "/icons/icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/icon-maskable-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Scan Crop Leaf",
+      "short_name": "Scan",
+      "description": "Open live crop leaf disease scanner",
+      "url": "/?screen=disease-detect",
+      "icons": [{ "src": "/icons/icon-192x192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Satellite Farm GIS",
+      "short_name": "Farm GIS",
+      "description": "View satellite NDVI and soil moisture map",
+      "url": "/?screen=satellite",
+      "icons": [{ "src": "/icons/icon-192x192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Expert Consultation",
+      "short_name": "Consult",
+      "description": "Chat with an agronomy specialist",
+      "url": "/?screen=chat",
+      "icons": [{ "src": "/icons/icon-192x192.png", "sizes": "192x192" }]
+    }
+  ]
+}
