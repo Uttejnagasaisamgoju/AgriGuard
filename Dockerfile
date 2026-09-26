@@ -1,4 +1,4 @@
-# Backend Dockerfile for AgriGuard (when Railway Root Directory is "/backend")
+# Root Dockerfile for AgriGuard Backend (when Railway Root Directory is repository root "/")
 FROM python:3.12-slim-bookworm
 
 ENV PYTHONDONTWRITEBYTECODE=1 \
@@ -22,15 +22,15 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     curl \
     && rm -rf /var/lib/apt/lists/*
 
-# Copy requirements and install CPU-only PyTorch first to prevent huge 2.6GB CUDA download
-COPY requirements.txt .
+# Copy lean production requirements and install CPU-only PyTorch first
+COPY backend/requirements.txt .
 RUN pip install --no-cache-dir torch==2.4.1 torchvision==0.19.1 --index-url https://download.pytorch.org/whl/cpu && \
     pip install --no-cache-dir -r requirements.txt
 
-# Copy backend source code and essential upload models relative to /backend
-COPY app ./app
-COPY uploads/models ./uploads/models
-COPY run.py .
+# Copy backend source code and essential upload models
+COPY backend/app ./app
+COPY backend/uploads/models ./uploads/models
+COPY backend/run.py .
 
 # Ensure standard upload directory tree exists
 RUN mkdir -p /app/uploads/images \

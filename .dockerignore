@@ -1,0 +1,74 @@
+# Root .dockerignore for AgriGuard Repository
+# Prevents bloated context from crashing Docker image unpack on Railway
+
+# Version control & IDE
+.git
+.gitignore
+.vscode
+.idea
+
+# Node / Frontend
+node_modules
+frontend/node_modules
+frontend/dist
+frontend/src
+frontend/public
+frontend/index.html
+frontend/vite.config.ts
+frontend/tsconfig*.json
+frontend/capacitor.config.ts
+
+# Python virtualenvs & caches
+.venv
+venv
+backend/.venv
+backend/venv
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache
+.coverage
+
+# Databases & local state
+*.db
+*.db-journal
+*.db-wal
+*.db-shm
+*.sqlite
+*.sqlite3
+
+# Logs & temp files
+logs
+backend/logs
+*.log
+scratch
+backend/scratch
+
+# Large binaries & tools
+tools
+*.apk
+*.zip
+*.tar.gz
+
+# Datasets, training, and tests (not needed in production image)
+ml
+training
+docs
+tests
+backend/tests
+requirements-dev.txt
+backend/requirements-dev.txt
+
+# Root uploads folder (test/mock files)
+/uploads
+
+# Backend upload media: exclude ephemeral user files, strictly preserve ML models
+backend/uploads/*
+!backend/uploads/models
+!backend/uploads/models/**
+
+# Local environments
+.env
+.env.*
+!.env.example
