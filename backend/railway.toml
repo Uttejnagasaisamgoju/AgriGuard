@@ -1,0 +1,14 @@
+[build]
+builder = "docker"
+dockerfilePath = "Dockerfile"
+
+[deploy]
+healthcheckPath = "/api/health"
+healthcheckTimeout = 300
+restartPolicyType = "on_failure"
+restartPolicyMaxRetries = 10
+
+[services]
+  [services.web]
+    port = 8000
+    resources = { cpu = 1, memory = 1024 }

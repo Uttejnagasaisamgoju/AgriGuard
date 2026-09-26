@@ -91,10 +91,42 @@ ehthumbs.db
 *.sln
 *.sw?
 
-# Uploaded test specimens
-backend/uploads/disease_detection/*.jpg
-backend/uploads/disease_detection/*.jpeg
-backend/uploads/disease_detection/*.png
-backend/uploads/enhanced/*.jpg
-backend/uploads/enhanced/*.png
-!backend/uploads/.gitkeep
+# ML Training data & datasets (too large for git)
+ml/datasets/
+ml/scripts/
+ml/training/
+training/
+training/datasets/
+
+# Runtime uploads (generated at runtime, not for git)
+/uploads/
+!backend/uploads/models/
+!backend/uploads/models/*
+
+# Android build artifacts
+*.apk
+*.aab
+
+# Test files
+test_*.db
+test_*.db-journal
+test_*.py
+test_*.jpg
+test_*.json
+
+# IDE & OS
+.idea/
+.vscode/
+*.sw?
+.DS_Store
+Thumbs.db
+
+# Logs
+logs/
+*.log
+
+# Cache
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.node_cache/
