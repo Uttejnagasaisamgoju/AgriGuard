@@ -1,6 +1,7 @@
 [build]
-builder = "DOCKERFILE"
+builder = "docker"
 dockerfilePath = "Dockerfile"
+# Root directory is handled by running from backend/ folder
 
 [deploy]
 healthcheckPath = "/api/health"
