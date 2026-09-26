@@ -180,8 +180,8 @@ export const DiseaseDetailView: React.FC<DiseaseDetailViewProps> = ({ disease: i
 
   return (
     <div className="space-y-4 animate-fade-in-up pb-6">
-      {/* Header */}
-      <div className="flex items-center justify-between">
+      {/* Sticky Top Header Bar */}
+      <div className="sticky top-0 z-30 -mt-2 py-3 bg-[#031c15]/95 backdrop-blur-xl border-b border-emerald-500/20 -mx-3 sm:-mx-6 px-3 sm:px-6 flex items-center justify-between shadow-lg">
         <button
           onClick={onBack}
           aria-label={t('common.back', undefined, 'Back')}

@@ -153,7 +153,7 @@ def start_backend() -> subprocess.Popen:
         creationflags=subprocess.CREATE_NEW_PROCESS_GROUP if sys.platform == "win32" else 0,
     )
 
-    max_wait = 40
+    max_wait = 90
     deadline = time.time() + max_wait
     while time.time() < deadline:
         if proc.poll() is not None:

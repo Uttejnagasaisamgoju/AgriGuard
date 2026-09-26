@@ -1,0 +1,100 @@
+# Dependencies
+node_modules/
+frontend/node_modules/
+.pnp
+.pnp.js
+
+# Python & Virtual Environments
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+backend/.venv/
+.venv/
+venv/
+env/
+ENV/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Environment & Secret files
+.env
+.env.*
+!.env.example
+backend/.env
+backend/.env.*
+!backend/.env.example
+frontend/.env
+frontend/.env.*
+!frontend/.env.example
+
+# Local SQLite databases & journals
+*.db
+*.db-shm
+*.db-wal
+*.db-journal
+backend/*.db
+backend/*.db-shm
+backend/*.db-wal
+backend/*.db-journal
+
+# Logs & Runtime telemetry
+logs/
+backend/logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+live_https_status.json
+
+# Build outputs
+frontend/dist/
+dist/
+out/
+.next/
+
+# Android & Capacitor build artifacts
+android/.gradle/
+android/app/build/
+android/build/
+*.apk
+*.aab
+.gradle/
+
+# OS metadata
+.DS_Store
+Thumbs.db
+ehthumbs.db
+[Dd]esktop.ini
+
+# IDE configs
+.idea/
+.vscode/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Uploaded test specimens
+backend/uploads/disease_detection/*.jpg
+backend/uploads/disease_detection/*.jpeg
+backend/uploads/disease_detection/*.png
+backend/uploads/enhanced/*.jpg
+backend/uploads/enhanced/*.png
+!backend/uploads/.gitkeep

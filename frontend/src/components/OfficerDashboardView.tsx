@@ -203,8 +203,8 @@ export const OfficerDashboardView: React.FC<OfficerDashboardViewProps> = ({
         </div>
       )}
 
-      {/* Header */}
-      <div className="flex items-center justify-between">
+      {/* Sticky Header Bar — Pinned on scroll */}
+      <div className="sticky top-0 z-30 -mt-2 py-3 bg-[#0a180f]/95 backdrop-blur-xl border-b border-emerald-500/20 -mx-3 sm:-mx-6 px-3 sm:px-6 flex items-center justify-between shadow-lg">
         <div className="flex items-center gap-3">
           <button onClick={onBack} className="lg:hidden p-2 rounded-xl hover:bg-emerald-900/30 transition">
             <ArrowLeft className="w-5 h-5 text-emerald-300" />
@@ -291,9 +291,9 @@ export const OfficerDashboardView: React.FC<OfficerDashboardViewProps> = ({
           </div>
         </div>
 
-        {/* Case List or Resolved Table */}
+        {/* Case List or Resolved Table — Internal Smooth Scrolling */}
         {caseTab === 'active' ? (
-          <div className="space-y-2.5">
+          <div className="space-y-2.5 max-h-[460px] overflow-y-auto overscroll-contain pr-1">
             {activeCases.length > 0 ? (
               activeCases.map((caseItem) => (
                 <div
@@ -330,7 +330,7 @@ export const OfficerDashboardView: React.FC<OfficerDashboardViewProps> = ({
           </div>
         ) : (
           /* Resolved Cases Table / List */
-          <div className="space-y-2.5">
+          <div className="space-y-2.5 max-h-[460px] overflow-y-auto overscroll-contain pr-1">
             {resolvedCases.length > 0 ? (
               resolvedCases.map((caseItem) => (
                 <div

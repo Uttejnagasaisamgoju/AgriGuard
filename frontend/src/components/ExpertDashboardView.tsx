@@ -151,19 +151,19 @@ export const ExpertDashboardView: React.FC<ExpertDashboardViewProps> = ({
 
   return (
     <div className="space-y-4 animate-fade-in-up">
-      {/* Header */}
-      <div className="flex items-center justify-between flex-wrap gap-3">
+      {/* Sticky Header Bar — Pinned on scroll */}
+      <div className="sticky top-0 z-30 -mt-2 py-3 bg-[#02151c]/95 backdrop-blur-xl border-b border-cyan-500/20 -mx-3 sm:-mx-6 px-3 sm:px-6 flex items-center justify-between flex-wrap gap-3 shadow-lg">
         <div>
           <div className="flex items-center gap-2">
             <h1 className="text-xl font-black text-white font-heading">
               Hello, {user?.name?.startsWith('Dr.') ? user?.name : `Dr. ${user?.name || 'Expert'}`} 👋
             </h1>
-            <span className="flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-500/20 border border-emerald-400/40 text-emerald-300 text-[10px] font-bold">
-              <Sparkles className="w-3 h-3 text-emerald-400" />
+            <span className="flex items-center gap-1 px-2 py-0.5 rounded-full bg-cyan-500/20 border border-cyan-400/40 text-cyan-300 text-[10px] font-bold">
+              <Sparkles className="w-3 h-3 text-cyan-400" />
               Verified Expert
             </span>
           </div>
-          <p className="text-xs text-emerald-300/70 mt-0.5">
+          <p className="text-xs text-cyan-300/70 mt-0.5">
             Plant Pathology &amp; Agronomy Consultation Desk
           </p>
         </div>
@@ -175,18 +175,18 @@ export const ExpertDashboardView: React.FC<ExpertDashboardViewProps> = ({
             disabled={updatingOnline}
             className={`flex items-center gap-2 px-3 py-1.5 rounded-xl border text-xs font-bold transition cursor-pointer ${
               isOnline
-                ? 'bg-emerald-500/20 border-emerald-400/50 text-emerald-300'
+                ? 'bg-cyan-500/20 border-cyan-400/50 text-cyan-300'
                 : 'bg-zinc-800/60 border-zinc-600/40 text-zinc-400'
             }`}
           >
-            <span className={`w-2 h-2 rounded-full ${isOnline ? 'bg-emerald-400 animate-pulse' : 'bg-zinc-500'}`} />
+            <span className={`w-2 h-2 rounded-full ${isOnline ? 'bg-cyan-400 animate-pulse' : 'bg-zinc-500'}`} />
             <span>{isOnline ? t('expert.onlineStatus', undefined, 'Online / Available') : t('expert.offlineStatus', undefined, 'Offline')}</span>
           </button>
 
           {onOpenNotifications && (
             <button
               onClick={onOpenNotifications}
-              className="p-2 rounded-xl bg-emerald-950/40 border border-emerald-500/20 text-emerald-300 hover:text-white transition cursor-pointer"
+              className="p-2 rounded-xl bg-cyan-950/40 border border-cyan-500/20 text-cyan-300 hover:text-white transition cursor-pointer"
               title={t('nav.notifications', undefined, 'Notifications')}
             >
               <Bell className="w-4 h-4" />
@@ -298,48 +298,48 @@ export const ExpertDashboardView: React.FC<ExpertDashboardViewProps> = ({
               <p className="text-[11px] mt-0.5">When farmers submit disease queries or request assistance, they will appear here in real-time.</p>
             </div>
           ) : (
-            <div className="space-y-2">
+            <div className="space-y-2 max-h-[460px] overflow-y-auto overscroll-contain pr-1">
               {consultations.map((c) => {
                 const priorityColor =
                   c.priority === 'High'
                     ? 'bg-red-500/20 text-red-400 border-red-500/35'
                     : c.priority === 'Medium'
                     ? 'bg-amber-500/20 text-amber-300 border-amber-500/35'
-                    : 'bg-emerald-500/20 text-emerald-400 border-emerald-500/35';
+                    : 'bg-cyan-500/20 text-cyan-400 border-cyan-500/35';
 
                 return (
                   <div
                     key={c.id}
                     onClick={onNavigateChat}
-                    className="glass-card p-3 flex items-center justify-between gap-3 border border-emerald-500/15 hover:border-emerald-400/40 hover:bg-emerald-950/40 transition cursor-pointer group"
+                    className="glass-card p-3 flex items-center justify-between gap-3 border border-cyan-500/15 hover:border-cyan-400/40 hover:bg-cyan-950/40 transition cursor-pointer group"
                   >
                     <div className="flex items-center gap-3 min-w-0">
-                      <div className="w-9 h-9 rounded-full bg-emerald-500/20 border border-emerald-400/40 flex items-center justify-center text-emerald-300 text-xs font-black flex-shrink-0">
+                      <div className="w-9 h-9 rounded-full bg-cyan-500/20 border border-cyan-400/40 flex items-center justify-center text-cyan-300 text-xs font-black flex-shrink-0">
                         {c.farmer_name.charAt(0).toUpperCase()}
                       </div>
                       <div className="min-w-0">
                         <div className="flex items-center gap-2 flex-wrap">
-                          <span className="text-xs font-bold text-white group-hover:text-emerald-300 transition">
+                          <span className="text-xs font-bold text-white group-hover:text-cyan-300 transition">
                             {c.farmer_name}
                           </span>
-                          <span className="text-[10px] px-1.5 py-0.2 rounded bg-emerald-900/40 text-emerald-300 font-semibold border border-emerald-500/20">
+                          <span className="text-[10px] px-1.5 py-0.2 rounded bg-cyan-900/40 text-cyan-300 font-semibold border border-cyan-500/20">
                             {c.crop}
                           </span>
                         </div>
-                        <p className="text-[11px] text-emerald-200/80 truncate mt-0.5">
+                        <p className="text-[11px] text-cyan-200/80 truncate mt-0.5">
                           {c.topic}
                         </p>
                       </div>
                     </div>
 
                     <div className="flex items-center gap-2 flex-shrink-0">
-                      <span className="text-[10px] text-emerald-300/60 font-medium hidden sm:inline">
+                      <span className="text-[10px] text-cyan-300/60 font-medium hidden sm:inline">
                         {c.time}
                       </span>
                       <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full border ${priorityColor}`}>
                         {c.priority}
                       </span>
-                      <ChevronRight className="w-4 h-4 text-emerald-400/60 group-hover:text-emerald-300 transition" />
+                      <ChevronRight className="w-4 h-4 text-cyan-400/60 group-hover:text-cyan-300 transition" />
                     </div>
                   </div>
                 );
@@ -348,7 +348,7 @@ export const ExpertDashboardView: React.FC<ExpertDashboardViewProps> = ({
           )
         ) : (
           /* Resolved Cases Tab for Expert */
-          <div className="space-y-2.5">
+          <div className="space-y-2.5 max-h-[460px] overflow-y-auto overscroll-contain pr-1">
             {resolvedCases.length > 0 ? (
               resolvedCases.map((caseItem) => (
                 <div

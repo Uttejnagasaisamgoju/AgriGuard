@@ -513,8 +513,8 @@ export const DiseaseDetectionView: React.FC<DiseaseDetectionViewProps> = ({
 
   return (
     <div className="space-y-4 animate-fade-in-up">
-      {/* Header */}
-      <div className="flex items-center justify-between">
+      {/* Sticky Header */}
+      <div className="sticky top-0 z-30 -mt-2 py-3 bg-[#031c15]/95 backdrop-blur-xl border-b border-emerald-500/20 -mx-3 sm:-mx-6 px-3 sm:px-6 flex items-center justify-between shadow-lg">
         <div className="flex items-center gap-3">
           <button onClick={onBack} className="lg:hidden p-2 rounded-xl hover:bg-emerald-900/30 transition">
             <ArrowLeft className="w-5 h-5 text-emerald-300" />

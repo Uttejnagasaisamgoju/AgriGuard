@@ -636,7 +636,7 @@ export const AIAssistantView: React.FC<AIAssistantViewProps> = ({
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950 text-slate-100 flex flex-col relative">
+    <div className="h-[calc(100dvh-130px)] min-h-[520px] bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950 text-slate-100 flex flex-col relative rounded-2xl overflow-hidden border border-white/10 shadow-2xl">
       {/* Header */}
       <header className="sticky top-0 z-30 backdrop-blur-xl bg-slate-950/85 border-b border-white/10 px-4 py-3 flex items-center justify-between">
         <div className="flex items-center gap-3">

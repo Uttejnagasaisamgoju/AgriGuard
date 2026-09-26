@@ -146,63 +146,67 @@ export const DiseaseLibraryView: React.FC<DiseaseLibraryViewProps> = ({ onBack, 
 
   return (
     <div className="space-y-4 animate-fade-in-up">
-      <div className="flex items-center justify-between flex-wrap gap-3">
-        <div className="flex items-center gap-3">
-          <button onClick={onBack} aria-label={t('common.back', undefined, 'Back')} className="lg:hidden p-2 rounded-xl hover:bg-emerald-900/30 transition">
-            <ArrowLeft className="w-5 h-5 text-emerald-300" />
-          </button>
-          <div>
-            <h1 className="text-xl font-black text-white font-heading">
-              {t('library.title', undefined, 'Disease & Pest Library')}
-            </h1>
-            <p className="text-emerald-300/70 text-xs mt-0.5">
-              {t('library.botanicalDatabaseSubtitle', undefined, 'Botanical pathology database with dedicated symptomatic photography')}
-            </p>
+      {/* Sticky Top Header Bar with Search & Filters — Stays pinned on scroll */}
+      <div className="sticky top-0 z-30 -mt-2 py-3 bg-[#031c15]/95 backdrop-blur-xl border-b border-emerald-500/20 -mx-3 sm:-mx-6 px-3 sm:px-6 space-y-3 shadow-lg">
+        <div className="flex items-center justify-between flex-wrap gap-3">
+          <div className="flex items-center gap-3">
+            <button onClick={onBack} aria-label={t('common.back', undefined, 'Back')} className="lg:hidden p-2 rounded-xl hover:bg-emerald-900/30 transition">
+              <ArrowLeft className="w-5 h-5 text-emerald-300" />
+            </button>
+            <div>
+              <h1 className="text-xl font-black text-white font-heading">
+                {t('library.title', undefined, 'Disease & Pest Library')}
+              </h1>
+              <p className="text-emerald-300/70 text-xs mt-0.5">
+                {t('library.botanicalDatabaseSubtitle', undefined, 'Botanical pathology database with dedicated symptomatic photography')}
+              </p>
+            </div>
+          </div>
+          <div className="flex items-center gap-2">
+            <LanguageSelector variant="compact" />
+            <button
+              onClick={loadDiseasesFromBackend}
+              disabled={loading}
+              aria-label={t('library.refreshLibrary', undefined, 'Refresh Library')}
+              className="btn-secondary text-xs py-1.5 px-3 flex items-center gap-1.5 cursor-pointer"
+            >
+              <RefreshCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin' : ''}`} />
+              <span>{t('library.refreshLibrary', undefined, 'Refresh Library')}</span>
+            </button>
           </div>
         </div>
-        <div className="flex items-center gap-2">
-          <LanguageSelector variant="compact" />
-          <button
-            onClick={loadDiseasesFromBackend}
-            disabled={loading}
-            aria-label={t('library.refreshLibrary', undefined, 'Refresh Library')}
-            className="btn-secondary text-xs py-1.5 px-3 flex items-center gap-1.5 cursor-pointer"
-          >
-            <RefreshCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin' : ''}`} />
-            <span>{t('library.refreshLibrary', undefined, 'Refresh Library')}</span>
-          </button>
+
+        {/* Horizontally swipeable crop filter row */}
+        <div className="horizontal-swipe-row py-0.5">
+          {CROP_FILTER_KEYS.map((cropKey) => {
+            const isActive = selectedCrop === cropKey;
+            const label = CROP_LOCALIZATIONS[cropKey]?.[language] || CROP_LOCALIZATIONS[cropKey]?.en || cropKey;
+            return (
+              <button
+                key={cropKey}
+                onClick={() => setSelectedCrop(cropKey)}
+                className={`horizontal-swipe-item px-4 py-1.5 rounded-full text-xs font-bold transition-all cursor-pointer whitespace-nowrap ${
+                  isActive
+                    ? 'bg-emerald-500 text-emerald-950 shadow-[0_0_15px_rgba(16,185,129,0.35)]'
+                    : 'glass-card border border-emerald-500/20 text-emerald-300/80 hover:text-white hover:border-emerald-400/40'
+                }`}
+              >
+                {label}
+              </button>
+            );
+          })}
         </div>
-      </div>
 
-      <div className="flex flex-wrap gap-2">
-        {CROP_FILTER_KEYS.map((cropKey) => {
-          const isActive = selectedCrop === cropKey;
-          const label = CROP_LOCALIZATIONS[cropKey]?.[language] || CROP_LOCALIZATIONS[cropKey]?.en || cropKey;
-          return (
-            <button
-              key={cropKey}
-              onClick={() => setSelectedCrop(cropKey)}
-              className={`px-4 py-1.5 rounded-full text-xs font-bold transition-all cursor-pointer ${
-                isActive
-                  ? 'bg-emerald-500 text-emerald-950 shadow-[0_0_15px_rgba(16,185,129,0.35)]'
-                  : 'glass-card border border-emerald-500/20 text-emerald-300/80 hover:text-white hover:border-emerald-400/40'
-              }`}
-            >
-              {label}
-            </button>
-          );
-        })}
-      </div>
-
-      <div className="relative">
-        <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-emerald-400/60" />
-        <input
-          type="text"
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          placeholder={t('library.searchPlaceholder', undefined, 'Search disease name, crop, or pathogen category...')}
-          className="glass-input pl-11 text-xs py-2.5 font-medium border border-emerald-500/25"
-        />
+        <div className="relative">
+          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-emerald-400/60" />
+          <input
+            type="text"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder={t('library.searchPlaceholder', undefined, 'Search disease name, crop, or pathogen category...')}
+            className="glass-input pl-11 text-xs py-2.5 font-medium border border-emerald-500/25"
+          />
+        </div>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 pb-6">

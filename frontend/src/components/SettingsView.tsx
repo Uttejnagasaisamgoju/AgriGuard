@@ -190,12 +190,14 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
         </div>
       )}
 
-      {/* Header */}
-      <div className="flex items-center gap-3">
-        <button onClick={onBack} className="lg:hidden p-2 rounded-xl hover:bg-emerald-900/30 transition">
-          <ArrowLeft className="w-5 h-5 text-emerald-300" />
-        </button>
-        <h1 className="text-xl font-black text-white font-heading">Settings &amp; Profile</h1>
+      {/* Sticky Header */}
+      <div className="sticky top-0 z-30 -mt-2 py-3 bg-[#031c15]/95 backdrop-blur-xl border-b border-emerald-500/20 -mx-3 sm:-mx-6 px-3 sm:px-6 flex items-center justify-between shadow-lg">
+        <div className="flex items-center gap-3">
+          <button onClick={onBack} className="lg:hidden p-2 rounded-xl hover:bg-emerald-900/30 transition">
+            <ArrowLeft className="w-5 h-5 text-emerald-300" />
+          </button>
+          <h1 className="text-xl font-black text-white font-heading">{t('settings.title', undefined, 'Settings & Profile')}</h1>
+        </div>
       </div>
 
       {/* ── CARD: MY FARMS MANAGEMENT (REAL MAP-BASED) ────────────────── */}

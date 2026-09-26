@@ -19,10 +19,10 @@ interface HomeDashboardViewProps {
 
 export const HomeDashboardView: React.FC<HomeDashboardViewProps> = ({ onNavigate, onOpenNotifications }) => {
   const { user } = useAuth();
-  const { t } = useLanguage();
+  const { t, formatNumber } = useLanguage();
   const role = (user?.role || '').toUpperCase();
   const canAddFarm = role === 'FARMER' || role === 'ADMIN';
-  const { farms, selectedFarm, openAddFarmModal, loadingFarms } = useFarm();
+  const { farms, selectedFarm, selectFarm, openAddFarmModal, loadingFarms } = useFarm();
 
   const [dashboard, setDashboard] = useState<DashboardData | null>(null);
   const [weather, setWeather] = useState<WeatherData | null>(null);
@@ -103,45 +103,106 @@ export const HomeDashboardView: React.FC<HomeDashboardViewProps> = ({ onNavigate
   }
 
   return (
-    <div className="space-y-5 animate-fade-in-up">
-      {/* Greeting + Farm Selector + Weather Header */}
-      <div className="flex flex-wrap items-center justify-between gap-4">
+    <div className="space-y-4 animate-fade-in-up">
+      {/* Sticky Top Greeting & Controls Bar — Stays pinned on scroll */}
+      <div className="sticky top-0 z-30 -mt-2 py-3 bg-[#031c15]/95 backdrop-blur-xl border-b border-emerald-500/20 -mx-3 sm:-mx-6 px-3 sm:px-6 flex flex-wrap items-center justify-between gap-3 shadow-lg">
         <div>
-          <h1 className="text-2xl lg:text-3xl font-black text-white font-heading">
+          <h1 className="text-xl sm:text-2xl font-black text-white font-heading">
             {t('common.welcome', undefined, 'Hello')}, {user?.name || t('roles.farmer')} 👋
           </h1>
-          <p className="text-emerald-300/80 text-xs sm:text-sm mt-0.5">{t('common.brandTagline', undefined, 'Healthy crops, better tomorrow!')}</p>
+          <p className="text-emerald-300/80 text-xs mt-0.5">{t('common.brandTagline', undefined, 'Healthy crops, better tomorrow!')}</p>
         </div>
 
         {/* Farm Selector + Weather card + Notification Bell */}
         <div className="flex items-center gap-2.5 flex-wrap">
           <FarmSelector />
 
-          <div className="glass-card px-4 py-2.5 flex items-center gap-3 border border-emerald-500/25">
-            <Cloud className="w-8 h-8 text-cyan-300 flex-shrink-0" />
+          <div className="glass-card px-3.5 py-2 flex items-center gap-2.5 border border-emerald-500/25">
+            <Cloud className="w-6 h-6 text-cyan-300 flex-shrink-0" />
             <div className="text-left">
-              <div className="text-lg font-black text-white leading-tight">
+              <div className="text-base font-black text-white leading-tight">
                 {weather?.temperature ? `${weather.temperature}°C` : '28°C'}
               </div>
-              <div className="text-[10px] text-emerald-200/90 font-semibold">
+              <div className="text-[10px] text-emerald-200/90 font-semibold truncate max-w-[100px]">
                 {weather?.description || 'Partly Cloudy'}
-              </div>
-              <div className="text-[10px] text-emerald-300/60 font-medium">
-                {selectedFarm ? `${selectedFarm.name}${selectedFarm.district ? ', ' + selectedFarm.district : ''}` : (weather?.location || 'Telangana, India')}
               </div>
             </div>
           </div>
 
           <button
             onClick={onOpenNotifications}
-            className="glass-card p-3 hover:bg-emerald-500/20 text-emerald-300 hover:text-white transition-colors relative cursor-pointer border border-emerald-500/25"
+            className="glass-card p-2.5 hover:bg-emerald-500/20 text-emerald-300 hover:text-white transition-colors relative cursor-pointer border border-emerald-500/25"
             title={t('nav.notifications', undefined, 'Notifications')}
           >
-            <Bell className="w-5 h-5" />
-            <span className="absolute top-2 right-2 w-2 h-2 bg-red-400 rounded-full animate-pulse" />
+            <Bell className="w-4 h-4" />
+            <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-red-400 rounded-full animate-pulse" />
           </button>
         </div>
       </div>
+
+      {/* Horizontal Swipeable Farm Cards Row (Farmer Role) */}
+      {farms.length > 0 && (
+        <div className="space-y-2">
+          <div className="flex items-center justify-between">
+            <h3 className="text-xs font-bold text-emerald-300 uppercase tracking-wider flex items-center gap-1.5">
+              <Sprout className="w-3.5 h-3.5 text-emerald-400" />
+              <span>{t('farmer.myFarms', undefined, 'Your Registered Farms')} ({farms.length})</span>
+            </h3>
+            {canAddFarm && (
+              <button
+                type="button"
+                onClick={openAddFarmModal}
+                className="text-xs text-emerald-400 hover:text-emerald-300 font-bold flex items-center gap-1 cursor-pointer transition"
+              >
+                <Plus className="w-3.5 h-3.5" />
+                <span>{t('farmer.addFarm', undefined, 'Add Farm')}</span>
+              </button>
+            )}
+          </div>
+
+          <div className="horizontal-swipe-row py-1">
+            {farms.map((farm) => {
+              const isSelected = selectedFarm?.id === farm.id;
+              const areaStr = farm.area_hectares
+                ? `${formatNumber(Number(farm.area_hectares.toFixed(1)))} ${t('farm.hectaresUnit', undefined, 'ha')}`
+                : (farm.crop_type || 'Field');
+
+              return (
+                <div
+                  key={farm.id}
+                  onClick={() => selectFarm(farm)}
+                  className={`horizontal-swipe-item w-56 sm:w-64 glass-card p-3 rounded-2xl border transition-all cursor-pointer select-none text-left ${
+                    isSelected
+                      ? 'border-emerald-400 bg-emerald-900/40 shadow-[0_0_20px_rgba(52,211,153,0.3)] scale-[1.02]'
+                      : 'border-emerald-500/20 hover:border-emerald-400/50 hover:bg-emerald-950/50'
+                  }`}
+                >
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-[10px] font-extrabold px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-400/30 truncate max-w-[120px]">
+                      {farm.crop_type || 'Crop'}
+                    </span>
+                    <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
+                      isSelected
+                        ? 'bg-emerald-400 text-emerald-950 font-black'
+                        : 'bg-emerald-950 text-emerald-400/80 border border-emerald-500/30'
+                    }`}>
+                      {isSelected ? t('common.active', undefined, 'Active') : t('common.view', undefined, 'Select')}
+                    </span>
+                  </div>
+
+                  <h4 className="text-sm font-black text-white truncate">{farm.name}</h4>
+                  <p className="text-[11px] text-emerald-200/80 mt-0.5 font-medium">{areaStr}</p>
+
+                  <div className="flex items-center justify-between text-[10px] text-emerald-400/70 mt-2.5 pt-2 border-t border-emerald-500/15">
+                    <span className="truncate">{farm.village || farm.district || 'Telangana'}</span>
+                    <span className="text-emerald-300 font-bold">{t('satellite.statusGood', undefined, 'Healthy')}</span>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
 
       {error && (
         <div className="glass-card p-3 flex items-center justify-between border-red-500/30">

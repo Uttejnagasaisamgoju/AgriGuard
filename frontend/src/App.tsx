@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { useAuth } from './context/AuthContext';
 import { useFarm } from './context/FarmContext';
 import { FarmCreateModal } from './components/FarmCreateModal';
@@ -117,6 +117,8 @@ export const App: React.FC = () => {
     }
   }, [isAuthenticated]);
 
+  const scrollViewportRef = useRef<HTMLDivElement>(null);
+
   const handleNavigate = (screen: string, recordId?: string | null) => {
     if (recordId !== undefined) {
       setDeepLinkRecordId(recordId);
@@ -124,7 +126,9 @@ export const App: React.FC = () => {
     if (currentScreen !== screen) {
       window.history.pushState({}, '', `/${screen === 'home' ? '' : screen}`);
       setCurrentScreen(screen);
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+      if (scrollViewportRef.current) {
+        scrollViewportRef.current.scrollTo({ top: 0, behavior: 'smooth' });
+      }
     }
   };
 
@@ -343,25 +347,27 @@ export const App: React.FC = () => {
 
       {/* Main Content */}
       <div className="main-content">
-        <main className="page-container">
-          {renderScreen()}
-        </main>
+        <div className="app-scroll-view" id="main-scroll-viewport" ref={scrollViewportRef}>
+          <main className="page-container">
+            {renderScreen()}
+          </main>
 
-        {/* Footer */}
-        <footer className="w-full py-3 text-xs text-emerald-300/70 flex flex-wrap items-center justify-between px-6 border-t border-emerald-500/10 bg-emerald-950/30 select-none mt-auto">
-          <div className="flex items-center gap-3 mx-auto lg:mx-0 font-medium">
-            <Leaf className="w-3.5 h-3.5 text-emerald-400" />
-            <span>{t('common.footerSlogan1', undefined, 'Smarter Farming')}</span>
-            <span className="text-emerald-500/30">|</span>
-            <span>{t('common.footerSlogan2', undefined, 'Healthier Crops')}</span>
-            <span className="text-emerald-500/30">|</span>
-            <span>{t('common.footerSlogan3', undefined, 'Better Tomorrow')}</span>
-          </div>
-          <div className="flex items-center gap-1.5 font-bold text-sm text-white font-heading mx-auto lg:mx-0 mt-2 lg:mt-0">
-            <Leaf className="w-4 h-4 text-emerald-400" />
-            <span>{t('auth.appName', undefined, 'AgriGuard')}</span>
-          </div>
-        </footer>
+          {/* Footer */}
+          <footer className="w-full py-3 text-xs text-emerald-300/70 flex flex-wrap items-center justify-between px-6 border-t border-emerald-500/10 bg-emerald-950/30 select-none mt-auto">
+            <div className="flex items-center gap-3 mx-auto lg:mx-0 font-medium">
+              <Leaf className="w-3.5 h-3.5 text-emerald-400" />
+              <span>{t('common.footerSlogan1', undefined, 'Smarter Farming')}</span>
+              <span className="text-emerald-500/30">|</span>
+              <span>{t('common.footerSlogan2', undefined, 'Healthier Crops')}</span>
+              <span className="text-emerald-500/30">|</span>
+              <span>{t('common.footerSlogan3', undefined, 'Better Tomorrow')}</span>
+            </div>
+            <div className="flex items-center gap-1.5 font-bold text-sm text-white font-heading mx-auto lg:mx-0 mt-2 lg:mt-0">
+              <Leaf className="w-4 h-4 text-emerald-400" />
+              <span>{t('auth.appName', undefined, 'AgriGuard')}</span>
+            </div>
+          </footer>
+        </div>
       </div>
 
       {/* Mobile Bottom Navigation */}
