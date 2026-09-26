@@ -1,24 +1,51 @@
+# Python bytecode & caches
 __pycache__
 *.pyc
 *.pyo
 *.pyd
 .pytest_cache
 .coverage
-*.db
-*.db-journal
-*.log
-.env
-.env.local
+
+# Virtual environments
 .venv
 venv
+
+# Databases and journal files
+*.db
+*.db-journal
+*.db-wal
+*.db-shm
+*.sqlite
+*.sqlite3
+
+# Logs
+logs
+*.log
+
+# Environment files
+.env
+.env.local
 .env.*
-!uploads/models/
-!uploads/enhanced/
-!.gitignore
+!.env.example
+
+# IDE & Version Control
 .git
+.gitignore
 .vscode
 .idea
-*.md
+
+# Tests, dev requirements, and scratch files
 tests
+requirements-dev.txt
+scratch
+scratch_check_failed.py
+test_proxy_login.py
+test.pdf
 *.bat
 *.sh
+*.md
+
+# Exclude large user-uploaded media (strictly preserve ML models)
+uploads/*
+!uploads/models
+!uploads/models/**
