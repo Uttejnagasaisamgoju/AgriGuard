@@ -872,7 +872,7 @@ export const ReportsView: React.FC<ReportsViewProps> = ({ onBack, initialFarmId 
       {/* RECORD TREATMENT / ACTION MODAL */}
       {isTreatmentModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fade-in">
-          <div className="relative w-full max-w-lg glass-panel p-5 rounded-2xl border border-emerald-500/30 text-left space-y-4 shadow-2xl">
+          <div className="relative w-full max-w-lg glass-panel p-5 rounded-2xl border border-emerald-500/30 text-left space-y-4 shadow-2xl max-h-[90vh] overflow-y-auto">
             <div className="flex items-center justify-between border-b border-emerald-500/20 pb-3">
               <div className="flex items-center gap-2">
                 <Droplets className="w-5 h-5 text-emerald-400" />

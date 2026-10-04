@@ -6,6 +6,7 @@ import {
 } from 'lucide-react';
 import { officerApi } from '../services/api';
 import { useLanguage } from '../context/LanguageContext';
+import { formatStatSentence } from '../utils/pronunciation';
 import type { OfficerDashboardData, OfficerCase } from '../types';
 import { OfficerCaseModal } from './OfficerCaseModal';
 import { FieldVisitModal } from './FieldVisitModal';
@@ -22,7 +23,7 @@ export const OfficerDashboardView: React.FC<OfficerDashboardViewProps> = ({
   onNavigateMap,
   onNavigateChat,
 }) => {
-  const { t, formatDate } = useLanguage();
+  const { t, formatDate, language } = useLanguage();
   const [data, setData] = useState<OfficerDashboardData | null>(null);
   const [cases, setCases] = useState<OfficerCase[]>([]);
   const [caseTab, setCaseTab] = useState<'active' | 'resolved'>('active');
@@ -128,6 +129,7 @@ export const OfficerDashboardView: React.FC<OfficerDashboardViewProps> = ({
 
   const statCards = [
     {
+      key: 'farmersMonitored',
       label: t('officer.farmersMonitored', undefined, 'Farmers Monitored'),
       value: farmersMonitored,
       icon: Users,
@@ -135,6 +137,7 @@ export const OfficerDashboardView: React.FC<OfficerDashboardViewProps> = ({
       iconColor: 'text-emerald-400',
     },
     {
+      key: 'activeCases',
       label: t('officer.activeCases', undefined, 'Active Cases'),
       value: issuesDetected,
       icon: AlertTriangle,
@@ -142,6 +145,7 @@ export const OfficerDashboardView: React.FC<OfficerDashboardViewProps> = ({
       iconColor: 'text-amber-400',
     },
     {
+      key: 'resolvedCases',
       label: t('officer.resolvedCases', undefined, 'Resolved Cases'),
       value: resolvedToday,
       icon: CheckCircle2,
@@ -235,11 +239,22 @@ export const OfficerDashboardView: React.FC<OfficerDashboardViewProps> = ({
       )}
 
       {/* 3 Stat Cards — Real Database Counts */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5" role="region" aria-label="Officer Field Statistics">
         {statCards.map((card) => {
           const Icon = card.icon;
+          const spokenSentence = formatStatSentence(card.key, card.label, card.value, language);
           return (
-            <div key={card.label} className="glass-card p-4 flex items-center gap-3.5 border border-emerald-500/20 text-left">
+            <div
+              key={card.key}
+              tabIndex={0}
+              role="group"
+              aria-label={spokenSentence}
+              data-stat-label={card.key}
+              data-stat-value={card.value}
+              data-stat-raw-label={card.label}
+              data-read-aloud-text={spokenSentence}
+              className="glass-card p-4 flex items-center gap-3.5 border border-emerald-500/20 text-left cursor-pointer"
+            >
               <div className={`w-12 h-12 rounded-2xl ${card.color} border border-emerald-400/30 flex items-center justify-center flex-shrink-0 shadow-[0_0_15px_rgba(16,185,129,0.15)]`}>
                 <Icon className={`w-6 h-6 ${card.iconColor}`} />
               </div>

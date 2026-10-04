@@ -8,17 +8,19 @@ from app.core.config import settings
 
 logger = logging.getLogger("agriguard.email")
 
-# Ensure logs directories exist
-BACKEND_LOGS_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))), "logs")
-ROOT_LOGS_DIR = os.path.dirname(BACKEND_LOGS_DIR) + "\\logs"
-os.makedirs(BACKEND_LOGS_DIR, exist_ok=True)
-try:
-    os.makedirs(ROOT_LOGS_DIR, exist_ok=True)
-except Exception:
-    pass
+from pathlib import Path
+
+# Ensure logs directories exist for both backend and workspace root
+BACKEND_DIR = Path(__file__).resolve().parent.parent.parent
+WORKSPACE_DIR = BACKEND_DIR.parent
+BACKEND_LOGS_DIR = BACKEND_DIR / "logs"
+ROOT_LOGS_DIR = WORKSPACE_DIR / "logs"
+BACKEND_LOGS_DIR.mkdir(parents=True, exist_ok=True)
+ROOT_LOGS_DIR.mkdir(parents=True, exist_ok=True)
+
 EMAIL_LOG_FILES = [
-    os.path.join(BACKEND_LOGS_DIR, "emails.log"),
-    os.path.join(ROOT_LOGS_DIR, "emails.log"),
+    str(BACKEND_LOGS_DIR / "emails.log"),
+    str(ROOT_LOGS_DIR / "emails.log"),
 ]
 
 

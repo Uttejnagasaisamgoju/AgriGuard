@@ -40,7 +40,7 @@ export const ForceChangePasswordView: React.FC<ForceChangePasswordViewProps> = (
     try {
       const response = await authApi.changePassword(currentPassword, newPassword);
       setSuccessMsg('Password updated successfully! Redirecting to your dashboard...');
-      
+
       if (response?.user) {
         updateUser(response.user);
       } else if (user) {
@@ -60,12 +60,12 @@ export const ForceChangePasswordView: React.FC<ForceChangePasswordViewProps> = (
 
   return (
     <div
-      className="min-h-screen w-full flex items-center justify-center p-4 sm:p-6 relative bg-cover bg-center select-none"
+      className="w-full h-full min-h-[100dvh] overflow-y-auto overflow-x-hidden flex items-center justify-center p-4 sm:p-6 relative bg-cover bg-center select-none"
       style={{
         backgroundImage: `linear-gradient(rgba(3, 26, 20, 0.75), rgba(1, 14, 11, 0.90)), url('/agri_background.jpg')`,
       }}
     >
-      <div className="glass-panel w-full max-w-[440px] p-6 sm:p-8 relative border border-emerald-400/30 shadow-[0_20px_60px_rgba(0,0,0,0.7)] backdrop-blur-2xl text-center animate-fade-in-up">
+      <div className="glass-panel w-full max-w-[440px] my-auto p-6 sm:p-8 relative border border-emerald-400/30 shadow-[0_20px_60px_rgba(0,0,0,0.7)] backdrop-blur-2xl text-center animate-fade-in-up">
         {/* Security Shield Icon */}
         <div className="flex flex-col items-center mb-4">
           <div className="w-14 h-14 rounded-2xl bg-amber-500/20 border border-amber-400/50 flex items-center justify-center mb-2 shadow-[0_0_25px_rgba(245,158,11,0.35)]">
@@ -117,7 +117,7 @@ export const ForceChangePasswordView: React.FC<ForceChangePasswordViewProps> = (
                 value={currentPassword}
                 onChange={(e) => setCurrentPassword(e.target.value)}
                 placeholder="Enter the password received in email"
-                className="glass-input pl-9 pr-9 text-xs font-medium"
+                className="glass-input !pl-9 !pr-9 text-xs font-medium"
                 required
               />
             </div>
@@ -135,7 +135,7 @@ export const ForceChangePasswordView: React.FC<ForceChangePasswordViewProps> = (
                 value={newPassword}
                 onChange={(e) => setNewPassword(e.target.value)}
                 placeholder="At least 8 characters"
-                className="glass-input pl-9 pr-9 text-xs font-medium"
+                className="glass-input !pl-9 !pr-9 text-xs font-medium"
                 required
                 minLength={8}
               />
@@ -154,7 +154,7 @@ export const ForceChangePasswordView: React.FC<ForceChangePasswordViewProps> = (
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
                 placeholder="Re-enter your new permanent password"
-                className="glass-input pl-9 pr-9 text-xs font-medium"
+                className="glass-input !pl-9 !pr-9 text-xs font-medium"
                 required
                 minLength={8}
               />

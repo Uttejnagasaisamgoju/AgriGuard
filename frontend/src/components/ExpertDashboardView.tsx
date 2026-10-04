@@ -8,6 +8,7 @@ import {
 import { expertApi, officerApi } from '../services/api';
 import { useAuth } from '../context/AuthContext';
 import { useLanguage } from '../context/LanguageContext';
+import { formatStatSentence } from '../utils/pronunciation';
 import type { ExpertDashboardData, ExpertConsultationItem, OfficerCase } from '../types';
 import { OfficerCaseModal } from './OfficerCaseModal';
 
@@ -25,7 +26,7 @@ export const ExpertDashboardView: React.FC<ExpertDashboardViewProps> = ({
   onOpenNotifications,
 }) => {
   const { user } = useAuth();
-  const { t, formatDate } = useLanguage();
+  const { t, formatDate, language } = useLanguage();
   const [data, setData] = useState<ExpertDashboardData | null>(null);
   const [resolvedCases, setResolvedCases] = useState<OfficerCase[]>([]);
   const [activeTab, setActiveTab] = useState<'consultations' | 'resolved'>('consultations');
@@ -87,6 +88,7 @@ export const ExpertDashboardView: React.FC<ExpertDashboardViewProps> = ({
 
   const statCards = [
     {
+      key: 'activeConversations',
       label: t('expert.activeConversations', undefined, 'Active Conversations'),
       value: activeConversations,
       icon: MessageSquare,
@@ -95,6 +97,7 @@ export const ExpertDashboardView: React.FC<ExpertDashboardViewProps> = ({
       border: 'border-emerald-500/30',
     },
     {
+      key: 'pendingQuestions',
       label: t('expert.pendingQuestions', undefined, 'Pending Questions'),
       value: pendingQuestions,
       icon: HelpCircle,
@@ -103,6 +106,7 @@ export const ExpertDashboardView: React.FC<ExpertDashboardViewProps> = ({
       border: 'border-amber-500/30',
     },
     {
+      key: 'farmersHelped',
       label: t('expert.farmersHelped', undefined, 'Farmers Helped'),
       value: farmersHelped,
       icon: Users,
@@ -111,6 +115,7 @@ export const ExpertDashboardView: React.FC<ExpertDashboardViewProps> = ({
       border: 'border-cyan-500/30',
     },
     {
+      key: 'avgRating',
       label: t('expert.avgRating', undefined, 'Avg. Rating'),
       value: avgRating,
       icon: Star,
@@ -196,13 +201,21 @@ export const ExpertDashboardView: React.FC<ExpertDashboardViewProps> = ({
       </div>
 
       {/* 4 Stat Cards */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3" role="region" aria-label="Agronomist Consultation Statistics">
         {statCards.map((stat) => {
           const Icon = stat.icon;
+          const spokenSentence = formatStatSentence(stat.key, stat.label, stat.value, language);
           return (
             <div
-              key={stat.label}
-              className={`glass-card p-4 flex flex-col justify-between border ${stat.border}`}
+              key={stat.key}
+              tabIndex={0}
+              role="group"
+              aria-label={spokenSentence}
+              data-stat-label={stat.key}
+              data-stat-value={stat.value}
+              data-stat-raw-label={stat.label}
+              data-read-aloud-text={spokenSentence}
+              className={`glass-card p-4 flex flex-col justify-between border ${stat.border} cursor-pointer`}
             >
               <div className="flex items-center justify-between mb-2">
                 <span className="text-xs font-medium text-emerald-300/70">{stat.label}</span>

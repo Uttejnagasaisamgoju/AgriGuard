@@ -604,7 +604,16 @@ export const DiseaseDetectionView: React.FC<DiseaseDetectionViewProps> = ({
         <div className="glass-card p-5 flex flex-col justify-between border border-emerald-500/20">
           <div className="flex flex-col gap-3">
             <div
+              role="button"
+              tabIndex={0}
+              aria-label={t('detection.dropImageHere', undefined, 'Choose photos of diseased crop leaf. Click to browse files.')}
               onClick={() => fileInputRef.current?.click()}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault();
+                  fileInputRef.current?.click();
+                }
+              }}
               className="border-2 border-dashed border-emerald-500/40 rounded-2xl p-6 text-center cursor-pointer hover:border-emerald-400 hover:bg-emerald-900/15 transition flex flex-col items-center justify-center gap-2 min-h-[140px]"
             >
               <div className="w-11 h-11 rounded-2xl bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center">
@@ -619,6 +628,7 @@ export const DiseaseDetectionView: React.FC<DiseaseDetectionViewProps> = ({
                 type="button"
                 onClick={startCamera}
                 disabled={images.length >= 5}
+                aria-label={t('detection.captureTab', undefined, 'Open Live Camera to capture leaf')}
                 className="py-2.5 px-3 rounded-xl border border-emerald-500/30 bg-emerald-900/20 hover:bg-emerald-900/40 text-emerald-300 text-xs font-bold flex items-center justify-center gap-2 transition cursor-pointer disabled:opacity-50"
               >
                 <Camera className="w-4 h-4 text-emerald-400" />
@@ -629,6 +639,7 @@ export const DiseaseDetectionView: React.FC<DiseaseDetectionViewProps> = ({
                 type="button"
                 onClick={() => fileInputRef.current?.click()}
                 disabled={images.length >= 5}
+                aria-label={t('detection.uploadPhoto', undefined, 'Browse image files to upload')}
                 className="py-2.5 px-3 rounded-xl border border-emerald-500/30 bg-emerald-900/20 hover:bg-emerald-900/40 text-emerald-300 text-xs font-bold flex items-center justify-center gap-2 transition cursor-pointer disabled:opacity-50"
               >
                 <Plus className="w-4 h-4 text-emerald-400" />
@@ -812,7 +823,7 @@ export const DiseaseDetectionView: React.FC<DiseaseDetectionViewProps> = ({
                   {result.thumbnailUrl ? (
                     <img
                       src={result.thumbnailUrl}
-                      alt="Analyzed leaf sample"
+                      alt={`Analyzed crop leaf specimen showing ${result.disease} symptoms`}
                       className="w-full h-full object-cover"
                     />
                   ) : (
@@ -833,7 +844,7 @@ export const DiseaseDetectionView: React.FC<DiseaseDetectionViewProps> = ({
                     <>
                       <img
                         src={result.referenceImage}
-                        alt={`${result.disease} botanical reference`}
+                        alt={`Botanical verified specimen showing ${result.disease} pathology`}
                         className="w-full h-full object-cover"
                       />
                       <div className="absolute inset-x-0 bottom-0 bg-emerald-950/85 backdrop-blur-sm py-0.5 text-[9px] font-bold text-emerald-300 border-t border-emerald-500/30">
@@ -863,12 +874,19 @@ export const DiseaseDetectionView: React.FC<DiseaseDetectionViewProps> = ({
               </div>
 
               {/* Confidence Bar */}
-              <div className="space-y-1">
+              <div className="space-y-1" role="region" aria-label="Diagnostic Model Confidence">
                 <div className="flex items-center justify-between text-xs font-bold">
                   <span className="text-emerald-300/70">{t('detection.confidence', undefined, 'Model Confidence')}:</span>
                   <span className="text-emerald-400">{result.confidence}%</span>
                 </div>
-                <div className="w-full h-2 rounded-full bg-emerald-950/80 overflow-hidden border border-emerald-500/20">
+                <div
+                  role="progressbar"
+                  aria-valuenow={result.confidence}
+                  aria-valuemin={0}
+                  aria-valuemax={100}
+                  aria-label={`Model confidence ${result.confidence} percent`}
+                  className="w-full h-2 rounded-full bg-emerald-950/80 overflow-hidden border border-emerald-500/20"
+                >
                   <div
                     className="h-full bg-gradient-to-r from-emerald-500 to-emerald-400 rounded-full transition-all duration-700"
                     style={{ width: `${result.confidence}%` }}
@@ -971,7 +989,7 @@ export const DiseaseDetectionView: React.FC<DiseaseDetectionViewProps> = ({
       {/* Live Camera Viewfinder Modal */}
       {isCameraOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-fade-in">
-          <div className="relative w-full max-w-lg rounded-2xl glass-card p-5 border-emerald-500/40 space-y-4 shadow-2xl">
+          <div className="relative w-full max-w-lg rounded-2xl glass-card p-5 border-emerald-500/40 space-y-4 shadow-2xl max-h-[90vh] overflow-y-auto">
             <div className="flex items-center justify-between pb-3 border-b border-emerald-500/20">
               <div className="flex items-center gap-2 text-white font-bold text-sm">
                 <Camera className="w-4 h-4 text-emerald-400" />
@@ -1158,7 +1176,7 @@ export const DiseaseDetectionView: React.FC<DiseaseDetectionViewProps> = ({
       {/* Expert Feedback Modal */}
       {showFeedbackModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fade-in">
-          <div className="w-full max-w-md rounded-2xl glass-card p-5 border border-emerald-500/30 space-y-4 shadow-2xl bg-slate-900/95 text-left">
+          <div className="w-full max-w-md rounded-2xl glass-card p-5 border border-emerald-500/30 space-y-4 shadow-2xl bg-slate-900/95 text-left max-h-[90vh] overflow-y-auto">
             <div className="flex items-center justify-between pb-3 border-b border-white/10">
               <h3 className="text-sm font-bold text-white flex items-center gap-2">
                 <Sparkles className="w-4 h-4 text-emerald-400" />

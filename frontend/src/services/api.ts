@@ -1,6 +1,6 @@
 import axios from 'axios';
 import type {
-  Farm, Disease, WeatherData, DashboardData, OfficerDashboardData,
+  Farm, Disease, WeatherData, WeatherHotspotData, DashboardData, OfficerDashboardData,
   OfficerCase, ExpertProfile, Conversation, ChatMessage, NotificationItem,
   ReportData, PredictionResult, ExpertDashboardData, SatelliteData,
   FarmReportData, FarmTreatment, FarmReportHistoryItem,
@@ -21,15 +21,41 @@ const isNativePlatform = (): boolean => {
 };
 
 export const getApiBase = () => {
-  // Check user/runtime override first (e.g. if custom endpoint is configured)
+  // 1. Web browser: ALWAYS use current window origin if available.
+  // This completely prevents cross-origin errors, stale tunnel URLs in localStorage,
+  // and makes the app work seamlessly on ANY device (iPhone, Android, PC, Mac, tablets).
+  if (
+    typeof window !== 'undefined' &&
+    window.location?.origin &&
+    window.location.origin !== 'null' &&
+    !isNativePlatform()
+  ) {
+    const origin = window.location.origin;
+    // Clean up any stale localStorage tunnel pointers that don't match the active origin
+    try {
+      const customApi = localStorage.getItem('agriguard_api_url')?.trim();
+      if (customApi && !customApi.startsWith(origin)) {
+        localStorage.removeItem('agriguard_api_url');
+      }
+    } catch {
+      // ignore storage access errors in restricted browser contexts
+    }
+    return `${origin}/api`;
+  }
+
+  // 2. User/runtime override (e.g. custom endpoint in native mode or testing)
   if (typeof window !== 'undefined') {
-    const customApi = localStorage.getItem('agriguard_api_url')?.trim();
-    if (customApi) {
-      return customApi.endsWith('/api') ? customApi : `${customApi.replace(/\/+$/, '')}/api`;
+    try {
+      const customApi = localStorage.getItem('agriguard_api_url')?.trim();
+      if (customApi) {
+        return customApi.endsWith('/api') ? customApi : `${customApi.replace(/\/+$/, '')}/api`;
+      }
+    } catch {
+      // ignore
     }
   }
 
-  // 1. If running as native mobile app, use public HTTPS domain (never loopback https://localhost)
+  // 3. If running as native mobile app (Capacitor/Cordova), use configured HTTPS domain
   if (isNativePlatform()) {
     const envBase = (import.meta.env.VITE_API_BASE_URL as string | undefined)?.trim();
     if (envBase && !envBase.includes('localhost')) {
@@ -39,16 +65,6 @@ export const getApiBase = () => {
     if (pubUrl && !pubUrl.includes('localhost')) {
       return `${pubUrl.replace(/\/+$/, '')}/api`;
     }
-  }
-
-  // 2. Web browser: Use current origin
-  if (
-    typeof window !== 'undefined' &&
-    window.location?.origin &&
-    !isNativePlatform()
-  ) {
-    const origin = window.location.origin;
-    return `${origin}/api`;
   }
 
   const envBase = (import.meta.env.VITE_API_BASE_URL as string | undefined)?.trim();
@@ -261,6 +277,14 @@ export const diseaseApi = {
 export const weatherApi = {
   getWeather: async (params: { lat?: number; lon?: number; farm_id?: string }): Promise<WeatherData> => {
     const res = await api.get('/weather', { params });
+    return res.data;
+  },
+  getHotspot: async (params: { lat?: number; lon?: number; farm_id?: string; force_refresh?: boolean }): Promise<WeatherHotspotData> => {
+    const res = await api.get('/weather/hotspot', { params });
+    return res.data;
+  },
+  evaluateRisk: async (farmId: string): Promise<any> => {
+    const res = await api.post(`/weather/evaluate-risk?farm_id=${farmId}`);
     return res.data;
   },
 };

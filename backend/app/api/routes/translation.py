@@ -1,4 +1,6 @@
-from fastapi import APIRouter, HTTPException, Query, Body, Depends
+from fastapi import APIRouter, HTTPException, Query, Body, Depends, Response
+import urllib.parse
+import httpx
 from pydantic import BaseModel
 from typing import List, Optional, Dict, Any
 from sqlalchemy.orm import Session
@@ -192,3 +194,54 @@ async def batch_extract_translations(req: ExtractBatchRequest):
         "source_lang": req.source_lang,
         "translations_by_language": matrix
     }
+
+
+@router.get("/tts")
+async def get_speech_audio(
+    text: str = Query(..., min_length=1, max_length=1000),
+    lang: str = Query("en"),
+):
+    """
+    High-fidelity native cloud Text-to-Speech audio streaming.
+    Supports English, Telugu, Tamil, Kannada, Malayalam, Marathi, Hindi, and regional dialects.
+    """
+    tts_lang_map = {
+        "te": "te",
+        "ta": "ta",
+        "kn": "kn",
+        "ml": "ml",
+        "mr": "mr",
+        "hi": "hi",
+        "en": "en",
+        "tcy": "kn",  # Tulu -> Kannada speech engine
+        "kok": "mr",  # Konkani -> Marathi speech engine
+        "kfa": "kn",  # Kodava -> Kannada speech engine
+        "bgy": "kn",  # Beary -> Kannada speech engine
+        "bfq": "ta",  # Badaga -> Tamil speech engine
+    }
+    target_lang = tts_lang_map.get(lang.lower().split("-")[0], "en")
+
+    encoded = urllib.parse.quote(text[:1000])
+    url = f"https://translate.google.com/translate_tts?ie=UTF-8&client=tw-ob&q={encoded}&tl={target_lang}"
+
+    headers = {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+    }
+
+    try:
+        async with httpx.AsyncClient(timeout=10.0) as client:
+            res = await client.get(url, headers=headers)
+            if res.status_code == 200:
+                return Response(
+                    content=res.content,
+                    media_type="audio/mpeg",
+                    headers={
+                        "Cache-Control": "public, max-age=86400",
+                        "Content-Disposition": "inline; filename=speech.mp3",
+                    },
+                )
+            else:
+                raise HTTPException(status_code=res.status_code, detail="Cloud TTS generation failed.")
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"TTS synthesis error: {str(e)}")
+

@@ -336,6 +336,98 @@ export interface WeatherData {
   message?: string;
 }
 
+export type WeatherHotspotLayerType = 'rainfall' | 'temperature' | 'humidity' | 'wind' | 'disease_risk';
+export type SatelliteViewMode = 'satellite' | 'weather_hotspot';
+
+export interface PathogenThreat {
+  disease_name: string;
+  crop?: string;
+  category: 'Fungal' | 'Bacterial' | 'Pest' | 'Viral Vector' | 'Fungal / Oomycete' | string;
+  risk_score: number;
+  risk_level: 'Low' | 'Moderate' | 'Elevated' | 'Critical';
+  threshold_reason: string;
+  recommended_action: string;
+}
+
+export interface AgronomicDiseaseRisk {
+  overall_score: number;
+  risk_level: 'Low' | 'Moderate' | 'Elevated' | 'Critical';
+  color: string;
+  factors: {
+    fungal: number;
+    bacterial: number;
+    pest: number;
+  };
+  threats: PathogenThreat[];
+  pathology_matrix?: PathogenThreat[];
+  guidance: string;
+  disclaimer: string;
+}
+
+export interface WeatherHotspotShortTermItem {
+  time: string;
+  temp: number;
+  rain_prob: number;
+  humidity: number;
+  wind_speed: number;
+}
+
+export interface WeatherHotspotGridCell {
+  id: string;
+  row: number;
+  col: number;
+  lat: number;
+  lon: number;
+  distance_km: number;
+  is_center: boolean;
+  temperature: number;
+  feels_like: number;
+  humidity: number;
+  wind_speed: number;
+  wind_direction: number;
+  precipitation: number;
+  rain_probability: number;
+  weather_code: number;
+  weather_description: string;
+  disease_risk: AgronomicDiseaseRisk;
+  forecast_short_term?: WeatherHotspotShortTermItem[];
+}
+
+export interface WeatherHotspotRegionalSummary {
+  temp_min: number;
+  temp_max: number;
+  temp_avg: number;
+  humidity_min: number;
+  humidity_max: number;
+  humidity_avg: number;
+  wind_max: number;
+  wind_avg: number;
+  precip_max: number;
+  precip_total: number;
+  max_risk_score: number;
+}
+
+export interface WeatherHotspotData {
+  available: boolean;
+  provider: string;
+  farm_id?: string;
+  farm_name?: string;
+  crop_type?: string;
+  center: {
+    lat: number;
+    lon: number;
+  };
+  center_readings: WeatherHotspotGridCell;
+  grid_cells: WeatherHotspotGridCell[];
+  regional_summary: WeatherHotspotRegionalSummary;
+  elevated_threats: PathogenThreat[];
+  alert_dispatched?: boolean;
+  recorded_at: string;
+  cache_ttl_seconds?: number;
+  error?: string;
+  message?: string;
+}
+
 export interface DashboardData {
   user: { name: string; role: string };
   stats: {

@@ -559,13 +559,13 @@ export const AIAssistantView: React.FC<AIAssistantViewProps> = ({
             prev.map((m) =>
               m.id === aiMsgId
                 ? {
-                    ...m,
-                    isStreaming: false,
-                    sources: data.sources || [],
-                    suggested_questions: data.suggested_questions || [],
-                    farm_context: data.farm_context,
-                    escalation_recommended: data.escalation_recommended,
-                  }
+                  ...m,
+                  isStreaming: false,
+                  sources: data.sources || [],
+                  suggested_questions: data.suggested_questions || [],
+                  farm_context: data.farm_context,
+                  escalation_recommended: data.escalation_recommended,
+                }
                 : m
             )
           );
@@ -592,14 +592,14 @@ export const AIAssistantView: React.FC<AIAssistantViewProps> = ({
             prev.map((m) =>
               m.id === aiMsgId
                 ? {
-                    ...m,
-                    content: data.response,
-                    isStreaming: false,
-                    sources: data.sources || [],
-                    suggested_questions: data.suggested_questions || [],
-                    farm_context: data.farm_context,
-                    escalation_recommended: data.escalation_recommended,
-                  }
+                  ...m,
+                  content: data.response,
+                  isStreaming: false,
+                  sources: data.sources || [],
+                  suggested_questions: data.suggested_questions || [],
+                  farm_context: data.farm_context,
+                  escalation_recommended: data.escalation_recommended,
+                }
                 : m
             )
           );
@@ -614,15 +614,15 @@ export const AIAssistantView: React.FC<AIAssistantViewProps> = ({
         prev.map((m) =>
           m.id === aiMsgId
             ? {
-                ...m,
-                isStreaming: false,
-                isError: true,
-                failedQuery: query,
-                content:
-                  accumulatedContent ||
-                  `⚠️ The AI Assistant is temporarily unavailable. Please check your connection and try again. If the issue persists, use **Expert Chat** to reach a human agricultural expert.`,
-                suggested_questions: defaultSuggestions.slice(0, 2),
-              }
+              ...m,
+              isStreaming: false,
+              isError: true,
+              failedQuery: query,
+              content:
+                accumulatedContent ||
+                `⚠️ The AI Assistant is temporarily unavailable. Please check your connection and try again. If the issue persists, use **Expert Chat** to reach a human agricultural expert.`,
+              suggested_questions: defaultSuggestions.slice(0, 2),
+            }
             : m
         )
       );
@@ -636,7 +636,7 @@ export const AIAssistantView: React.FC<AIAssistantViewProps> = ({
   };
 
   return (
-    <div className="h-[calc(100dvh-130px)] min-h-[520px] bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950 text-slate-100 flex flex-col relative rounded-2xl overflow-hidden border border-white/10 shadow-2xl">
+    <div className="screen-fill-height bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950 text-slate-100 flex flex-col relative rounded-2xl overflow-hidden border border-white/10 shadow-2xl">
       {/* Header */}
       <header className="sticky top-0 z-30 backdrop-blur-xl bg-slate-950/85 border-b border-white/10 px-4 py-3 flex items-center justify-between">
         <div className="flex items-center gap-3">
@@ -647,7 +647,7 @@ export const AIAssistantView: React.FC<AIAssistantViewProps> = ({
           >
             <ArrowLeft className="w-5 h-5" />
           </button>
-        <div className="flex items-center gap-2.5">
+          <div className="flex items-center gap-2.5">
             {/* Distinct AI Avatar — circuit chip motif, not the AgriGuard leaf, not a human */}
             <div
               className="w-10 h-10 rounded-xl flex items-center justify-center transition-all duration-300 shrink-0"
@@ -815,20 +815,23 @@ export const AIAssistantView: React.FC<AIAssistantViewProps> = ({
               )}
 
               <div
-                className={`max-w-[85%] sm:max-w-[78%] rounded-2xl p-4 sm:p-5 shadow-lg ${
-                  isUser
+                role="article"
+                tabIndex={0}
+                aria-label={`${isUser ? 'You asked' : 'AI Assistant advised'}: ${msg.content}`}
+                data-read-aloud-text={`${isUser ? 'You asked' : 'AI Assistant advised'}: ${msg.content}`}
+                className={`max-w-[85%] sm:max-w-[78%] rounded-2xl p-4 sm:p-5 shadow-lg cursor-pointer ${isUser
                     ? 'rounded-br-none text-white'
                     : 'bg-slate-900/80 backdrop-blur-md border border-white/10 text-slate-200 rounded-bl-none'
-                }`}
+                  }`}
                 style={
                   isUser
                     ? {
-                        background: tokens.gradient,
-                        boxShadow: `0 4px 16px ${tokens.glow}`,
-                        borderColor: tokens.border,
-                        borderWidth: '1px',
-                        borderStyle: 'solid',
-                      }
+                      background: tokens.gradient,
+                      boxShadow: `0 4px 16px ${tokens.glow}`,
+                      borderColor: tokens.border,
+                      borderWidth: '1px',
+                      borderStyle: 'solid',
+                    }
                     : undefined
                 }
               >
@@ -1069,6 +1072,7 @@ export const AIAssistantView: React.FC<AIAssistantViewProps> = ({
         <div className="max-w-4xl mx-auto flex items-center gap-2">
           <input
             type="text"
+            id="ai-assistant-question-input"
             value={inputQuery}
             onChange={(e) => setInputQuery(e.target.value)}
             onKeyDown={(e) => {
@@ -1078,6 +1082,7 @@ export const AIAssistantView: React.FC<AIAssistantViewProps> = ({
               }
             }}
             placeholder={t('ai.askQuestion', undefined, 'Ask about crop symptoms, fertilizer dosage, pests, weather precautions...')}
+            aria-label={t('ai.askQuestion', undefined, 'Ask about crop symptoms, fertilizer dosage, pests, weather precautions')}
             className="flex-1 bg-slate-900/90 border border-white/10 focus:border-emerald-500 rounded-xl px-4 py-3 text-sm text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 transition-all shadow-inner"
             disabled={isLoading}
           />
@@ -1085,6 +1090,7 @@ export const AIAssistantView: React.FC<AIAssistantViewProps> = ({
           <button
             onClick={() => handleSendMessage()}
             disabled={!inputQuery.trim() || isLoading}
+            aria-label={t('ai.send', undefined, 'Ask AI')}
             style={{
               background: tokens.gradient,
               color: tokens.contrast,
@@ -1154,11 +1160,10 @@ export const AIAssistantView: React.FC<AIAssistantViewProps> = ({
                     <div
                       key={c.id}
                       onClick={() => handleSelectConversation(c.id)}
-                      className={`p-3 rounded-xl border text-left transition-all cursor-pointer ${
-                        isSelected
+                      className={`p-3 rounded-xl border text-left transition-all cursor-pointer ${isSelected
                           ? 'bg-white/10 border-white/30 text-white'
                           : 'bg-white/5 hover:bg-white/8 border-white/5 text-slate-300'
-                      }`}
+                        }`}
                       style={isSelected ? { borderColor: tokens.border } : undefined}
                     >
                       <div className="flex items-start justify-between gap-2">
@@ -1177,9 +1182,9 @@ export const AIAssistantView: React.FC<AIAssistantViewProps> = ({
                         <span>
                           {c.updated_at
                             ? new Date(c.updated_at).toLocaleDateString(undefined, {
-                                month: 'short',
-                                day: 'numeric',
-                              })
+                              month: 'short',
+                              day: 'numeric',
+                            })
                             : 'Recent'}
                         </span>
                       </div>

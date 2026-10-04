@@ -160,7 +160,7 @@ export const DownloadView: React.FC<DownloadViewProps> = ({ onBack }) => {
   };
 
   return (
-    <div className="min-h-screen w-full flex flex-col justify-between p-4 sm:p-6 select-none animate-fade-in-up max-w-2xl mx-auto">
+    <div className="w-full flex-1 flex flex-col justify-between p-2 sm:p-4 select-none animate-fade-in-up max-w-2xl mx-auto">
       {/* Top Header Navigation */}
       <div className="flex items-center justify-between pb-4 border-b border-emerald-500/20">
         <button
@@ -221,11 +221,10 @@ export const DownloadView: React.FC<DownloadViewProps> = ({ onBack }) => {
 
         {/* Option 1: Android Section */}
         <div
-          className={`glass-card p-5 space-y-4 border transition-all ${
-            deviceType === 'android'
+          className={`glass-card p-5 space-y-4 border transition-all ${deviceType === 'android'
               ? 'border-emerald-400 shadow-[0_0_30px_rgba(16,185,129,0.25)] bg-emerald-950/70'
               : 'border-emerald-500/20'
-          }`}
+            }`}
         >
           <div className="flex items-center justify-between pb-2 border-b border-emerald-500/20">
             <div className="flex items-center gap-2">
@@ -295,11 +294,10 @@ export const DownloadView: React.FC<DownloadViewProps> = ({ onBack }) => {
 
         {/* Option 2: iOS Safari Section */}
         <div
-          className={`glass-card p-5 space-y-4 border transition-all ${
-            deviceType === 'ios'
+          className={`glass-card p-5 space-y-4 border transition-all ${deviceType === 'ios'
               ? 'border-emerald-400 shadow-[0_0_30px_rgba(16,185,129,0.25)] bg-emerald-950/70'
               : 'border-emerald-500/20'
-          }`}
+            }`}
         >
           <div className="flex items-center justify-between pb-2 border-b border-emerald-500/20">
             <div className="flex items-center gap-2">
@@ -351,9 +349,8 @@ export const DownloadView: React.FC<DownloadViewProps> = ({ onBack }) => {
 
         {/* Option 3: Desktop Section */}
         <div
-          className={`glass-card p-4 space-y-3 border transition-all ${
-            deviceType === 'desktop' ? 'border-emerald-500/30' : 'border-emerald-500/15 opacity-80'
-          }`}
+          className={`glass-card p-4 space-y-3 border transition-all ${deviceType === 'desktop' ? 'border-emerald-500/30' : 'border-emerald-500/15 opacity-80'
+            }`}
         >
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">

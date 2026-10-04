@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom/client';
 import App from './App';
 import { AuthProvider } from './context/AuthContext';
 import { LanguageProvider } from './context/LanguageContext';
+import { ReadAloudProvider } from './context/ReadAloudContext';
 import { ThemeProvider } from './context/ThemeContext';
 import { FarmProvider } from './context/FarmContext';
 import './style.css';
@@ -33,11 +34,13 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <AuthProvider>
       <LanguageProvider>
-        <ThemeProvider>
-          <FarmProvider>
-            <App />
-          </FarmProvider>
-        </ThemeProvider>
+        <ReadAloudProvider>
+          <ThemeProvider>
+            <FarmProvider>
+              <App />
+            </FarmProvider>
+          </ThemeProvider>
+        </ReadAloudProvider>
       </LanguageProvider>
     </AuthProvider>
   </React.StrictMode>

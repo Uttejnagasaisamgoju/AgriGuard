@@ -8,12 +8,24 @@ from app.core.config import settings
 
 logger = logging.getLogger(__name__)
 
-CANONICAL_DB_FILE = Path(r"c:\sih3\backend\agriguard.db").resolve()
+_local_dev_dir = Path(r"c:\sih3\backend")
+if _local_dev_dir.exists():
+    CANONICAL_DB_FILE = (_local_dev_dir / "agriguard.db").resolve()
+else:
+    CANONICAL_DB_FILE = (Path(__file__).resolve().parent.parent.parent / "agriguard.db").resolve()
+
 CANONICAL_SQLITE_URL = f"sqlite:///{CANONICAL_DB_FILE.as_posix()}"
 
 db_url = settings.DATABASE_URL
-if not db_url or "sqlite" in db_url.lower():
+if db_url and db_url.startswith("postgres://"):
+    db_url = db_url.replace("postgres://", "postgresql://", 1)
+
+if not db_url:
     db_url = CANONICAL_SQLITE_URL
+elif "sqlite" in db_url.lower():
+    # If using sqlite but the configured path refers to non-existent Windows paths, fall back to container path
+    if ("c:" in db_url.lower() or "sih3" in db_url.lower()) and not _local_dev_dir.exists():
+        db_url = CANONICAL_SQLITE_URL
 
 if "sqlite" in db_url:
     engine = create_engine(

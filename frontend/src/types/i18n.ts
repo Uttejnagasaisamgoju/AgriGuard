@@ -625,4 +625,27 @@ export interface TranslationSchema {
     profileSaved: string;
     copiedToClipboard: string;
   };
+  readAloud?: {
+    cardTitle?: string;
+    cardSubtitle?: string;
+    title?: string;
+    statusActive?: string;
+    statusInactive?: string;
+    twoTapExplanation?: string;
+    speechSpeed?: string;
+    testVoiceBtn?: string;
+    assistiveNote?: string;
+    pause?: string;
+    resume?: string;
+    stop?: string;
+    tapHint?: string;
+    enabledAnnouncement?: string;
+    testSample?: string;
+    floatingControls?: string;
+    turnOff?: string;
+    changeSpeed?: string;
+    disableQuick?: string;
+    enableQuick?: string;
+  };
 }
+

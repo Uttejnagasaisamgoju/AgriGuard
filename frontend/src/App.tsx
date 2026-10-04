@@ -25,13 +25,16 @@ import { AIAssistantView } from './components/AIAssistantView';
 import { BASE_REFERENCE_DISEASES } from './utils/diseaseImages';
 import { FirstLaunchLanguageModal } from './components/FirstLaunchLanguageModal';
 import { NotificationPermissionBanner } from './components/NotificationPermissionBanner';
+import { ReadAloudControls } from './components/ReadAloudControls';
 import { useLanguage } from './context/LanguageContext';
+import { useReadAloud } from './context/ReadAloudContext';
 import { Leaf } from 'lucide-react';
 
 export const App: React.FC = () => {
   const { user, isAuthenticated, logout, isVerifyingSession } = useAuth();
   const { isModalOpen, closeModal, farmToEdit, handleFarmSaved } = useFarm();
   const { isLanguageModalOpen, closeLanguageModal, t } = useLanguage();
+  const { stop: stopReadAloud } = useReadAloud();
   
   // Parse deep link parameters from URL search query
   const getInitialDeepLink = (): { screen: string; recordId: string | null } => {
@@ -120,6 +123,7 @@ export const App: React.FC = () => {
   const scrollViewportRef = useRef<HTMLDivElement>(null);
 
   const handleNavigate = (screen: string, recordId?: string | null) => {
+    stopReadAloud();
     if (recordId !== undefined) {
       setDeepLinkRecordId(recordId);
     }
@@ -165,13 +169,13 @@ export const App: React.FC = () => {
   if (!isAuthenticated) {
     if (currentScreen === 'download') {
       return (
-        <>
+        <div className="w-full h-full min-h-[100dvh] overflow-y-auto overflow-x-hidden flex flex-col">
           <DownloadView onBack={() => handleNavigate('home')} />
           <FirstLaunchLanguageModal
             isOpen={isLanguageModalOpen}
             onClose={closeLanguageModal}
           />
-        </>
+        </div>
       );
     }
     return (
@@ -352,21 +356,23 @@ export const App: React.FC = () => {
             {renderScreen()}
           </main>
 
-          {/* Footer */}
-          <footer className="w-full py-3 text-xs text-emerald-300/70 flex flex-wrap items-center justify-between px-6 border-t border-emerald-500/10 bg-emerald-950/30 select-none mt-auto">
-            <div className="flex items-center gap-3 mx-auto lg:mx-0 font-medium">
-              <Leaf className="w-3.5 h-3.5 text-emerald-400" />
-              <span>{t('common.footerSlogan1', undefined, 'Smarter Farming')}</span>
-              <span className="text-emerald-500/30">|</span>
-              <span>{t('common.footerSlogan2', undefined, 'Healthier Crops')}</span>
-              <span className="text-emerald-500/30">|</span>
-              <span>{t('common.footerSlogan3', undefined, 'Better Tomorrow')}</span>
-            </div>
-            <div className="flex items-center gap-1.5 font-bold text-sm text-white font-heading mx-auto lg:mx-0 mt-2 lg:mt-0">
-              <Leaf className="w-4 h-4 text-emerald-400" />
-              <span>{t('auth.appName', undefined, 'AgriGuard')}</span>
-            </div>
-          </footer>
+          {/* Footer — shown on all standard scrollable views, hidden on full-height interactive chat screens to avoid double scroll */}
+          {currentScreen !== 'chat' && currentScreen !== 'ai-assistant' && (
+            <footer className="app-footer w-full py-3 text-xs text-emerald-300/70 flex flex-wrap items-center justify-between px-6 border-t border-emerald-500/10 bg-emerald-950/30 select-none mt-auto">
+              <div className="flex items-center gap-3 mx-auto lg:mx-0 font-medium">
+                <Leaf className="w-3.5 h-3.5 text-emerald-400" />
+                <span>{t('common.footerSlogan1', undefined, 'Smarter Farming')}</span>
+                <span className="text-emerald-500/30">|</span>
+                <span>{t('common.footerSlogan2', undefined, 'Healthier Crops')}</span>
+                <span className="text-emerald-500/30">|</span>
+                <span>{t('common.footerSlogan3', undefined, 'Better Tomorrow')}</span>
+              </div>
+              <div className="flex items-center gap-1.5 font-bold text-sm text-white font-heading mx-auto lg:mx-0 mt-2 lg:mt-0">
+                <Leaf className="w-4 h-4 text-emerald-400" />
+                <span>{t('auth.appName', undefined, 'AgriGuard')}</span>
+              </div>
+            </footer>
+          )}
         </div>
       </div>
 
@@ -396,6 +402,9 @@ export const App: React.FC = () => {
         isOpen={isLanguageModalOpen}
         onClose={closeLanguageModal}
       />
+
+      {/* Floating Read Aloud Voice Mode Controls */}
+      <ReadAloudControls />
     </div>
   );
 };

@@ -1,6 +1,9 @@
 from pydantic_settings import BaseSettings
 from typing import Optional, List
+from pathlib import Path
 import os
+
+_BACKEND_ENV = str(Path(__file__).resolve().parent.parent.parent / ".env")
 
 
 class Settings(BaseSettings):
@@ -15,7 +18,7 @@ class Settings(BaseSettings):
     )
     PUBLIC_URL: Optional[str] = None
 
-    DATABASE_URL: str = "sqlite:///c:/sih3/backend/agriguard.db"
+    DATABASE_URL: str = "sqlite:///./agriguard.db"
     DATABASE_POOL_SIZE: int = 10
     DATABASE_MAX_OVERFLOW: int = 20
 
@@ -83,7 +86,7 @@ class Settings(BaseSettings):
         return [t.strip() for t in self.ALLOWED_IMAGE_TYPES.split(",")]
 
     class Config:
-        env_file = ".env"
+        env_file = (_BACKEND_ENV, ".env")
         env_file_encoding = "utf-8"
         extra = "ignore"
 

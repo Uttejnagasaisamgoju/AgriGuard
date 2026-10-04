@@ -44,7 +44,7 @@ export const ModelDashboardView: React.FC<ModelDashboardProps> = ({
   const diseaseMetrics = modelStatus?.disease_detection_model?.metrics || {};
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-950 via-slate-900 to-emerald-950/40 text-slate-100 p-4 sm:p-6 lg:p-8">
+    <div className="w-full bg-gradient-to-b from-slate-950 via-slate-900 to-emerald-950/40 text-slate-100 p-4 sm:p-6 lg:p-8 rounded-2xl">
       <div className="max-w-6xl mx-auto space-y-6">
         {/* Header */}
         <header className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 backdrop-blur-xl bg-slate-900/60 border border-white/10 p-5 rounded-2xl shadow-xl">
@@ -107,11 +107,10 @@ export const ModelDashboardView: React.FC<ModelDashboardProps> = ({
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id as any)}
-                className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-semibold whitespace-nowrap transition-all ${
-                  isActive
+                className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-semibold whitespace-nowrap transition-all ${isActive
                     ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 shadow-lg shadow-emerald-500/10'
                     : 'bg-slate-900/60 hover:bg-white/5 text-slate-400 hover:text-slate-200 border border-white/5'
-                }`}
+                  }`}
               >
                 <Icon className="w-4 h-4" />
                 {tab.label}
@@ -296,11 +295,10 @@ export const ModelDashboardView: React.FC<ModelDashboardProps> = ({
                       <div>
                         <span className="font-semibold text-white">{c.crop}</span> — <span className="text-slate-300">{c.disease}</span>
                       </div>
-                      <span className={`px-2 py-0.5 rounded text-[10px] font-medium ${
-                        c.type === 'Healthy' ? 'bg-emerald-500/20 text-emerald-300' :
-                        c.type === 'Viral' ? 'bg-rose-500/20 text-rose-300' :
-                        c.type === 'Bacterial' ? 'bg-amber-500/20 text-amber-300' : 'bg-blue-500/20 text-blue-300'
-                      }`}>
+                      <span className={`px-2 py-0.5 rounded text-[10px] font-medium ${c.type === 'Healthy' ? 'bg-emerald-500/20 text-emerald-300' :
+                          c.type === 'Viral' ? 'bg-rose-500/20 text-rose-300' :
+                            c.type === 'Bacterial' ? 'bg-amber-500/20 text-amber-300' : 'bg-blue-500/20 text-blue-300'
+                        }`}>
                         {c.type}
                       </span>
                     </div>

@@ -184,18 +184,19 @@ def start_tunnel() -> tuple[subprocess.Popen, str]:
     - Quick Tunnel (no token): parses the random trycloudflare.com URL from the log.
     """
     token = _get_tunnel_token()
-    max_attempts = 4 if not token else 2
+    attempt = 0
 
-    for attempt in range(1, max_attempts + 1):
+    while True:
+        attempt += 1
         log_start_offset = TUNNEL_LOG.stat().st_size if TUNNEL_LOG.exists() else 0
         out_file = open(TUNNEL_LOG, "a", encoding="utf-8")
 
         if token:
-            log(f"  -> Using Cloudflare Named Tunnel (attempt {attempt}/{max_attempts})")
-            cmd = [str(CLOUDFLARED_EXE), "tunnel", "--edge-ip-version", "4", "run", "--token", token]
+            log(f"  -> Using Cloudflare Named Tunnel (attempt {attempt})")
+            cmd = [str(CLOUDFLARED_EXE), "tunnel", "--protocol", "http2", "--edge-ip-version", "4", "run", "--token", token]
         else:
-            log(f"  -> Launching Cloudflare Quick Tunnel (attempt {attempt}/{max_attempts}) on http://127.0.0.1:8000 ...")
-            cmd = [str(CLOUDFLARED_EXE), "tunnel", "--edge-ip-version", "4", "--url", "http://127.0.0.1:8000"]
+            log(f"  -> Launching Cloudflare Quick Tunnel (attempt {attempt}) on http://127.0.0.1:8000 ...")
+            cmd = [str(CLOUDFLARED_EXE), "tunnel", "--protocol", "http2", "--edge-ip-version", "4", "--url", "http://127.0.0.1:8000"]
 
         proc = subprocess.Popen(
             cmd,
@@ -210,7 +211,7 @@ def start_tunnel() -> tuple[subprocess.Popen, str]:
             time.sleep(6)
             if proc.poll() is not None:
                 log("WARNING: cloudflared Named Tunnel exited prematurely. Retrying...")
-                time.sleep(2)
+                time.sleep(3)
                 continue
 
             previous_url = _read_current_tunnel_url()
@@ -266,10 +267,10 @@ def start_tunnel() -> tuple[subprocess.Popen, str]:
             proc.kill()
         except Exception:
             pass
-        time.sleep(2)
 
-    log("ERROR: Could not get Cloudflare URL after retries. Exiting.")
-    sys.exit(1)
+        retry_wait = min(attempt * 4, 30)
+        log(f"  -> Retrying tunnel startup in {retry_wait}s (attempt {attempt + 1})...")
+        time.sleep(retry_wait)
 
 
 # -- Environment sync & frontend rebuild -----------------------------------------
@@ -463,6 +464,7 @@ def main():
     last_ping    = time.time()
     ping_interval = 25  # seconds
     ping_count   = 0
+    consecutive_edge_failures = 0
 
     while True:
         now = time.time()
@@ -495,14 +497,30 @@ def main():
             except Exception as e:
                 log(f"Local health ping failed: {e}")
 
+            last_edge_error = None
             try:
                 req = urllib.request.Request(
                     f"{tunnel_url}/api/health",
                     headers={"User-Agent": "AgriGuard-KeepAlive/1.0"})
-                with urllib.request.urlopen(req, timeout=8) as resp:
+                with urllib.request.urlopen(req, timeout=10) as resp:
                     public_ok = resp.status == 200
             except Exception as e:
+                last_edge_error = e
                 log(f"Public edge keep-alive warning: {e}")
+
+            if public_ok:
+                consecutive_edge_failures = 0
+            else:
+                consecutive_edge_failures += 1
+                # cloudflared handles reconnects internally; only restart if persistently down for > 4 min
+                is_local_dns_error = "getaddrinfo" in str(last_edge_error)
+                if consecutive_edge_failures >= 10 and not is_local_dns_error:
+                    log("WARNING: Edge persistently unreachable for > 4 minutes. Restarting Cloudflare tunnel...")
+                    try:
+                        tunnel_proc.kill()
+                    except Exception:
+                        pass
+                    consecutive_edge_failures = 0
 
             latency_ms = int((time.time() - t0) * 1000)
             status_str = (

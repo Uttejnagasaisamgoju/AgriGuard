@@ -177,13 +177,17 @@ export const DiseaseLibraryView: React.FC<DiseaseLibraryViewProps> = ({ onBack, 
         </div>
 
         {/* Horizontally swipeable crop filter row */}
-        <div className="horizontal-swipe-row py-0.5">
+        <div role="radiogroup" aria-label={t('library.filterByCrop', undefined, 'Filter diseases by crop')} className="horizontal-swipe-row py-0.5">
           {CROP_FILTER_KEYS.map((cropKey) => {
             const isActive = selectedCrop === cropKey;
             const label = CROP_LOCALIZATIONS[cropKey]?.[language] || CROP_LOCALIZATIONS[cropKey]?.en || cropKey;
             return (
               <button
                 key={cropKey}
+                type="button"
+                role="radio"
+                aria-checked={isActive}
+                aria-label={`Filter by ${label}`}
                 onClick={() => setSelectedCrop(cropKey)}
                 className={`horizontal-swipe-item px-4 py-1.5 rounded-full text-xs font-bold transition-all cursor-pointer whitespace-nowrap ${
                   isActive
@@ -201,9 +205,11 @@ export const DiseaseLibraryView: React.FC<DiseaseLibraryViewProps> = ({ onBack, 
           <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-emerald-400/60" />
           <input
             type="text"
+            id="disease-library-search"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder={t('library.searchPlaceholder', undefined, 'Search disease name, crop, or pathogen category...')}
+            aria-label={t('library.searchPlaceholder', undefined, 'Search disease name, crop, or pathogen category')}
             className="glass-input pl-11 text-xs py-2.5 font-medium border border-emerald-500/25"
           />
         </div>

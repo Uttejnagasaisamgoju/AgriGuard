@@ -99,7 +99,12 @@ export const LoginView: React.FC<LoginViewProps> = ({ onSuccess, onOpenDownload 
         // Detailed role mismatch error from server
         setError(err.response.data.detail);
       } else if (status === 401) {
-        setError('Invalid email or password. Please verify your credentials and try again.');
+        const detail = err?.response?.data?.detail;
+        if (detail && typeof detail === 'string') {
+          setError(detail);
+        } else {
+          setError('Invalid email or password. Please verify your credentials and try again.');
+        }
       } else if (status === 403) {
         const detail = err?.response?.data?.detail || 'Account has been disabled. Please contact support.';
         setError(detail);
@@ -158,7 +163,7 @@ export const LoginView: React.FC<LoginViewProps> = ({ onSuccess, onOpenDownload 
   if (isForgotPassword) {
     return (
       <div
-        className="min-h-screen w-full flex items-center justify-center p-4 sm:p-6 relative bg-cover bg-center select-none"
+        className="w-full h-full min-h-[100dvh] overflow-y-auto overflow-x-hidden flex items-center justify-center p-4 sm:p-6 relative bg-cover bg-center select-none"
         style={{
           backgroundImage: `linear-gradient(rgba(3, 26, 20, 0.70), rgba(1, 14, 11, 0.85)), url('/agri_background.jpg')`,
         }}
@@ -168,7 +173,7 @@ export const LoginView: React.FC<LoginViewProps> = ({ onSuccess, onOpenDownload 
           <LanguageSelector variant="dropdown" />
         </div>
 
-        <div className="glass-panel w-full max-w-[440px] p-6 sm:p-8 relative border border-emerald-400/25 shadow-[0_20px_60px_rgba(0,0,0,0.65)] backdrop-blur-2xl text-center animate-fade-in-up">
+        <div className="glass-panel w-full max-w-[440px] my-auto p-6 sm:p-8 relative border border-emerald-400/25 shadow-[0_20px_60px_rgba(0,0,0,0.65)] backdrop-blur-2xl text-center animate-fade-in-up">
           {/* Header */}
           <div className="flex flex-col items-center gap-2 mb-5">
             <div className="w-14 h-14 rounded-2xl bg-emerald-500/20 border border-emerald-400/50 flex items-center justify-center shrink-0 shadow-[0_0_25px_rgba(16,185,129,0.45)]">
@@ -217,7 +222,7 @@ export const LoginView: React.FC<LoginViewProps> = ({ onSuccess, onOpenDownload 
                 value={forgotEmail}
                 onChange={(e) => setForgotEmail(e.target.value)}
                 placeholder={t('auth.emailOrUsername', undefined, 'Registered email or username')}
-                className="glass-input pl-11 text-xs font-medium"
+                className="glass-input !pl-11 text-xs font-medium"
                 required
                 autoFocus
               />
@@ -258,7 +263,7 @@ export const LoginView: React.FC<LoginViewProps> = ({ onSuccess, onOpenDownload 
 
   return (
     <div
-      className="min-h-screen w-full flex items-center justify-center p-4 sm:p-6 relative bg-cover bg-center select-none"
+      className="w-full h-full min-h-[100dvh] overflow-y-auto overflow-x-hidden flex items-center justify-center p-4 sm:p-6 relative bg-cover bg-center select-none"
       style={{
         backgroundImage: `linear-gradient(rgba(3, 26, 20, 0.70), rgba(1, 14, 11, 0.85)), url('/agri_background.jpg')`,
       }}
@@ -270,11 +275,11 @@ export const LoginView: React.FC<LoginViewProps> = ({ onSuccess, onOpenDownload 
 
       {/* Centered Glass Login Card — dynamically styled with active role token */}
       <div
-        className="glass-panel w-full max-w-[440px] p-6 sm:p-8 relative shadow-[0_20px_60px_rgba(0,0,0,0.65)] backdrop-blur-2xl text-center animate-fade-in-up transition-all duration-300"
+        className="glass-panel w-full max-w-[440px] my-auto p-6 sm:p-8 relative shadow-[0_20px_60px_rgba(0,0,0,0.65)] backdrop-blur-2xl text-center animate-fade-in-up transition-all duration-300"
         style={{ borderColor: tokens.border }}
       >
         {/* Logo & Brand Header */}
-        <div className="flex flex-col items-center gap-2 mb-5">
+        <div className="flex flex-col items-center gap-2 mb-5 shrink-0">
           <div
             className="w-14 h-14 rounded-2xl flex items-center justify-center shrink-0 transition-all duration-300"
             style={{
@@ -296,7 +301,11 @@ export const LoginView: React.FC<LoginViewProps> = ({ onSuccess, onOpenDownload 
         </div>
 
         {/* 3-Role Tab Selector with distinct role accent colors */}
-        <div className="mb-5 p-1 bg-black/40 rounded-xl border border-white/10 flex items-center gap-1 backdrop-blur-md">
+        <div
+          role="tablist"
+          aria-label={t('auth.selectRoleTab', undefined, 'Select login persona')}
+          className="mb-5 p-1 bg-black/40 rounded-xl border border-white/10 flex items-center gap-1 backdrop-blur-md"
+        >
           {(['FARMER', 'OFFICER', 'EXPERT'] as UserRole[]).map((role) => {
             const isActive = selectedRole === role;
             const label = getRoleLabel(role);
@@ -312,12 +321,14 @@ export const LoginView: React.FC<LoginViewProps> = ({ onSuccess, onOpenDownload 
               <button
                 key={role}
                 type="button"
+                role="tab"
+                aria-selected={isActive}
+                aria-label={`${label} persona tab`}
                 onClick={() => handleRoleChange(role)}
-                className={`flex-1 py-1.5 px-2 rounded-lg text-xs font-bold transition-all duration-200 cursor-pointer ${
-                  isActive
+                className={`flex-1 py-1.5 px-2 rounded-lg text-xs font-bold transition-all duration-200 cursor-pointer ${isActive
                     ? activeClass
                     : 'text-slate-300/80 hover:text-white hover:bg-white/5'
-                }`}
+                  }`}
               >
                 {label}
               </button>
@@ -363,10 +374,12 @@ export const LoginView: React.FC<LoginViewProps> = ({ onSuccess, onOpenDownload 
                 <User className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-emerald-400/70 pointer-events-none" />
                 <input
                   type="text"
+                  id="login-full-name"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   placeholder={selectedRole === 'EXPERT' ? t('auth.drFullName', undefined, 'Dr. Full Name') : t('auth.fullName', undefined, 'Full Name')}
-                  className="glass-input pl-11 text-xs"
+                  aria-label={selectedRole === 'EXPERT' ? t('auth.drFullName', undefined, 'Dr. Full Name') : t('auth.fullName', undefined, 'Full Name')}
+                  className="glass-input !pl-11 text-xs"
                   required
                 />
               </div>
@@ -378,10 +391,12 @@ export const LoginView: React.FC<LoginViewProps> = ({ onSuccess, onOpenDownload 
             <User className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-emerald-400/70 pointer-events-none" />
             <input
               type={isSignUp ? 'email' : 'text'}
+              id="login-email-input"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder={isSignUp ? t('auth.email', undefined, 'Email address') : t('auth.emailOrUsername', undefined, 'Email address or username')}
-              className="glass-input pl-11 text-xs font-medium"
+              aria-label={isSignUp ? t('auth.email', undefined, 'Email address') : t('auth.emailOrUsername', undefined, 'Email address or username')}
+              className="glass-input !pl-11 text-xs font-medium"
               required
               autoComplete="username"
             />
@@ -393,10 +408,12 @@ export const LoginView: React.FC<LoginViewProps> = ({ onSuccess, onOpenDownload 
               <Phone className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-emerald-400/70 pointer-events-none" />
               <input
                 type="tel"
+                id="login-phone-input"
                 value={phone}
                 onChange={(e) => setPhone(e.target.value)}
                 placeholder={t('auth.phone', undefined, 'Mobile number (optional)')}
-                className="glass-input pl-11 text-xs"
+                aria-label={t('auth.phone', undefined, 'Mobile phone number')}
+                className="glass-input !pl-11 text-xs"
               />
             </div>
           )}
@@ -411,7 +428,8 @@ export const LoginView: React.FC<LoginViewProps> = ({ onSuccess, onOpenDownload 
                   value={specialization}
                   onChange={(e) => setSpecialization(e.target.value)}
                   placeholder={t('auth.specialization', undefined, 'Specialization (e.g. Plant Pathology)')}
-                  className="glass-input pl-11 text-xs"
+                  aria-label={t('auth.specialization', undefined, 'Specialization')}
+                  className="glass-input !pl-11 text-xs"
                   required
                 />
               </div>
@@ -423,7 +441,8 @@ export const LoginView: React.FC<LoginViewProps> = ({ onSuccess, onOpenDownload 
                   value={qualifications}
                   onChange={(e) => setQualifications(e.target.value)}
                   placeholder={t('auth.qualifications', undefined, 'Qualifications (e.g. PhD Agriculture)')}
-                  className="glass-input pl-11 text-xs"
+                  aria-label={t('auth.qualifications', undefined, 'Academic Qualifications')}
+                  className="glass-input !pl-11 text-xs"
                   required
                 />
               </div>
@@ -435,7 +454,8 @@ export const LoginView: React.FC<LoginViewProps> = ({ onSuccess, onOpenDownload 
                   value={yearsExperience}
                   onChange={(e) => setYearsExperience(e.target.value)}
                   placeholder={t('auth.yearsExperience', undefined, 'Years of experience')}
-                  className="glass-input pl-11 text-xs"
+                  aria-label={t('auth.yearsExperience', undefined, 'Years of experience')}
+                  className="glass-input !pl-11 text-xs"
                 />
               </div>
             </>
@@ -451,7 +471,8 @@ export const LoginView: React.FC<LoginViewProps> = ({ onSuccess, onOpenDownload 
                   value={assignedRegion}
                   onChange={(e) => setAssignedRegion(e.target.value)}
                   placeholder={t('auth.assignedRegion', undefined, 'Assigned Jurisdiction / District')}
-                  className="glass-input pl-11 text-xs"
+                  aria-label={t('auth.assignedRegion', undefined, 'Assigned Jurisdiction')}
+                  className="glass-input !pl-11 text-xs"
                   required
                 />
               </div>
@@ -463,7 +484,8 @@ export const LoginView: React.FC<LoginViewProps> = ({ onSuccess, onOpenDownload 
                   value={department}
                   onChange={(e) => setDepartment(e.target.value)}
                   placeholder={t('auth.department', undefined, 'Department / Division')}
-                  className="glass-input pl-11 text-xs"
+                  aria-label={t('auth.department', undefined, 'Department')}
+                  className="glass-input !pl-11 text-xs"
                 />
               </div>
             </>
@@ -474,16 +496,19 @@ export const LoginView: React.FC<LoginViewProps> = ({ onSuccess, onOpenDownload 
             <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-emerald-400/70 pointer-events-none" />
             <input
               type={showPassword ? 'text' : 'password'}
+              id="login-password-input"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="••••••••"
-              className="glass-input pl-11 pr-11 text-xs font-medium"
+              aria-label={t('auth.password', undefined, 'Password')}
+              className="glass-input !pl-11 !pr-11 text-xs font-medium"
               required
               autoComplete={isSignUp ? 'new-password' : 'current-password'}
             />
             <button
               type="button"
               onClick={() => setShowPassword(!showPassword)}
+              aria-label={showPassword ? t('auth.hidePassword', undefined, 'Hide password') : t('auth.showPassword', undefined, 'Show password')}
               className="absolute right-3.5 top-1/2 -translate-y-1/2 text-emerald-400/60 hover:text-emerald-300 transition cursor-pointer"
             >
               {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
@@ -498,6 +523,7 @@ export const LoginView: React.FC<LoginViewProps> = ({ onSuccess, onOpenDownload 
                   type="checkbox"
                   checked={rememberMe}
                   onChange={(e) => setRememberMe(e.target.checked)}
+                  aria-label={t('auth.rememberMe', undefined, 'Remember me')}
                   className="w-3.5 h-3.5 rounded accent-emerald-500 cursor-pointer"
                 />
                 <span className="font-medium text-[11px]">{t('auth.rememberMe', undefined, 'Remember me')}</span>
@@ -510,6 +536,7 @@ export const LoginView: React.FC<LoginViewProps> = ({ onSuccess, onOpenDownload 
                   setForgotSuccess(null);
                   setForgotEmail(email);
                 }}
+                aria-label={t('auth.forgotPassword', undefined, 'Forgot password?')}
                 className="text-[11px] text-emerald-400 hover:text-emerald-300 font-medium underline underline-offset-2 transition cursor-pointer"
               >
                 {t('auth.forgotPassword', undefined, 'Forgot password?')}
@@ -521,14 +548,15 @@ export const LoginView: React.FC<LoginViewProps> = ({ onSuccess, onOpenDownload 
           <button
             type="submit"
             disabled={isLoading}
-            className="btn-primary w-full py-2.5 text-xs font-bold tracking-wide mt-2 flex items-center justify-center gap-2 shadow-[0_0_20px_rgba(16,185,129,0.35)]"
+            aria-label={isSignUp ? `Create ${getRoleLabel(selectedRole)} Account` : `Sign In as ${getRoleLabel(selectedRole)}`}
+            className="btn-primary w-full py-2.5 text-xs font-bold tracking-wide mt-2 flex items-center justify-center gap-2 shadow-[0_0_20px_rgba(16,185,129,0.35)] cursor-pointer"
           >
             {isLoading ? (
               <span className="inline-block w-4 h-4 border-2 border-emerald-950 border-t-transparent rounded-full animate-spin" />
             ) : isSignUp ? (
               t('auth.createRoleAccount', { role: getRoleLabel(selectedRole) }, `Create ${getRoleLabel(selectedRole)} Account`)
             ) : (
-              t('auth.signInAs', { role: getRoleLabel(selectedRole) }, `Sign In as ${getRoleLabel(selectedRole)}`)
+              `${t('auth.signInAs', undefined, 'Sign In as')} ${getRoleLabel(selectedRole)}`
             )}
           </button>
 
@@ -548,34 +576,37 @@ export const LoginView: React.FC<LoginViewProps> = ({ onSuccess, onOpenDownload 
             <div className="grid grid-cols-3 gap-1.5 text-[10px]">
               <button
                 type="button"
+                aria-label="Use demo credentials for Farmer"
                 onClick={() => {
                   setSelectedRole('FARMER');
                   setEmail('farmer@demo.agriguard.app');
                   setPassword('Demo@1234');
                 }}
-                className="py-1 px-1.5 rounded-lg bg-emerald-950/40 border border-emerald-500/30 text-emerald-300 hover:bg-emerald-900/40 text-center font-semibold"
+                className="py-1 px-1.5 rounded-lg bg-emerald-950/40 border border-emerald-500/30 text-emerald-300 hover:bg-emerald-900/40 text-center font-semibold cursor-pointer"
               >
                 {t('roles.farmer')}
               </button>
               <button
                 type="button"
+                aria-label="Use demo credentials for Officer"
                 onClick={() => {
                   setSelectedRole('OFFICER');
                   setEmail('officer@demo.agriguard.app');
                   setPassword('Demo@1234');
                 }}
-                className="py-1 px-1.5 rounded-lg bg-emerald-950/40 border border-emerald-500/30 text-emerald-300 hover:bg-emerald-900/40 text-center font-semibold"
+                className="py-1 px-1.5 rounded-lg bg-emerald-950/40 border border-emerald-500/30 text-emerald-300 hover:bg-emerald-900/40 text-center font-semibold cursor-pointer"
               >
                 {t('roles.officer')}
               </button>
               <button
                 type="button"
+                aria-label="Use demo credentials for Expert"
                 onClick={() => {
                   setSelectedRole('EXPERT');
                   setEmail('expert@demo.agriguard.app');
                   setPassword('Demo@1234');
                 }}
-                className="py-1 px-1.5 rounded-lg bg-emerald-950/40 border border-emerald-500/30 text-emerald-300 hover:bg-emerald-900/40 text-center font-semibold"
+                className="py-1 px-1.5 rounded-lg bg-emerald-950/40 border border-emerald-500/30 text-emerald-300 hover:bg-emerald-900/40 text-center font-semibold cursor-pointer"
               >
                 {t('roles.expert')}
               </button>

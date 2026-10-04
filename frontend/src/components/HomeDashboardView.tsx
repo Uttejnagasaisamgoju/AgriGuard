@@ -12,6 +12,8 @@ import { dashboardApi, weatherApi } from '../services/api';
 import type { DashboardData, WeatherData, Farm } from '../types';
 import L from 'leaflet';
 
+import { formatStatSentence } from '../utils/pronunciation';
+
 interface HomeDashboardViewProps {
   onNavigate: (screen: string) => void;
   onOpenNotifications?: () => void;
@@ -19,7 +21,7 @@ interface HomeDashboardViewProps {
 
 export const HomeDashboardView: React.FC<HomeDashboardViewProps> = ({ onNavigate, onOpenNotifications }) => {
   const { user } = useAuth();
-  const { t, formatNumber } = useLanguage();
+  const { t, formatNumber, language } = useLanguage();
   const role = (user?.role || '').toUpperCase();
   const canAddFarm = role === 'FARMER' || role === 'ADMIN';
   const { farms, selectedFarm, selectFarm, openAddFarmModal, loadingFarms } = useFarm();
@@ -73,9 +75,9 @@ export const HomeDashboardView: React.FC<HomeDashboardViewProps> = ({ onNavigate
   };
 
   const statCards = [
-    { label: t('dashboard.totalFarms', undefined, 'Total Farms'), value: stats.total_farms, icon: Sprout, color: 'bg-emerald-500/20', iconColor: 'text-emerald-400', border: 'border-emerald-500/30' },
-    { label: t('dashboard.healthyCrops', undefined, 'Healthy Crops'), value: stats.healthy_crops, icon: Heart, color: 'bg-emerald-500/20', iconColor: 'text-emerald-400', border: 'border-emerald-500/30' },
-    { label: t('dashboard.activeOfficers', undefined, 'Active Officers'), value: stats.active_officers, icon: ShieldCheck, color: 'bg-amber-500/20', iconColor: 'text-amber-400', border: 'border-amber-500/30' },
+    { key: 'totalFarms', label: t('dashboard.totalFarms', undefined, 'Total Farms'), value: stats.total_farms, icon: Sprout, color: 'bg-emerald-500/20', iconColor: 'text-emerald-400', border: 'border-emerald-500/30' },
+    { key: 'healthyCrops', label: t('dashboard.healthyCrops', undefined, 'Healthy Crops'), value: stats.healthy_crops, icon: Heart, color: 'bg-emerald-500/20', iconColor: 'text-emerald-400', border: 'border-emerald-500/30' },
+    { key: 'activeOfficers', label: t('dashboard.activeOfficers', undefined, 'Active Officers'), value: stats.active_officers, icon: ShieldCheck, color: 'bg-amber-500/20', iconColor: 'text-amber-400', border: 'border-amber-500/30' },
   ];
 
   const quickActions = [
@@ -117,7 +119,15 @@ export const HomeDashboardView: React.FC<HomeDashboardViewProps> = ({ onNavigate
         <div className="flex items-center gap-2.5 flex-wrap">
           <FarmSelector />
 
-          <div className="glass-card px-3.5 py-2 flex items-center gap-2.5 border border-emerald-500/25">
+          <div
+            tabIndex={0}
+            role="button"
+            onClick={() => onNavigate('satellite')}
+            title="View Weather Hotspot Map in Satellite View"
+            aria-label={`Current weather: ${weather?.temperature ? `${weather.temperature} degrees Celsius` : '28 degrees Celsius'}, ${weather?.description || 'Partly Cloudy'}. Click to view Weather Hotspot Map.`}
+            data-read-aloud-text={`Current local weather is ${weather?.temperature ? `${weather.temperature} degrees Celsius` : '28 degrees Celsius'}, with ${weather?.description || 'Partly Cloudy'} skies.`}
+            className="glass-card px-3.5 py-2 flex items-center gap-2.5 border border-emerald-500/25 hover:border-cyan-400/50 hover:bg-emerald-900/30 transition cursor-pointer"
+          >
             <Cloud className="w-6 h-6 text-cyan-300 flex-shrink-0" />
             <div className="text-left">
               <div className="text-base font-black text-white leading-tight">
@@ -133,6 +143,7 @@ export const HomeDashboardView: React.FC<HomeDashboardViewProps> = ({ onNavigate
             onClick={onOpenNotifications}
             className="glass-card p-2.5 hover:bg-emerald-500/20 text-emerald-300 hover:text-white transition-colors relative cursor-pointer border border-emerald-500/25"
             title={t('nav.notifications', undefined, 'Notifications')}
+            aria-label={t('nav.notifications', undefined, 'Notifications')}
           >
             <Bell className="w-4 h-4" />
             <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-red-400 rounded-full animate-pulse" />
@@ -244,11 +255,22 @@ export const HomeDashboardView: React.FC<HomeDashboardViewProps> = ({ onNavigate
       </div>
 
       {/* 3 Stat Cards — Rebalanced 3-column layout */}
-      <div className="dashboard-stats-grid dashboard-stats-3-col stagger-children">
+      <div className="dashboard-stats-grid dashboard-stats-3-col stagger-children" role="region" aria-label="Key Agricultural Statistics">
         {statCards.map((card) => {
           const Icon = card.icon;
+          const spokenSentence = formatStatSentence(card.key, card.label, card.value, language);
           return (
-            <div key={card.label} className={`stat-card ${card.border} animate-fade-in-up`}>
+            <div
+              key={card.key}
+              tabIndex={0}
+              role="group"
+              aria-label={spokenSentence}
+              data-stat-label={card.key}
+              data-stat-value={card.value}
+              data-stat-raw-label={card.label}
+              data-read-aloud-text={spokenSentence}
+              className={`stat-card ${card.border} animate-fade-in-up cursor-pointer`}
+            >
               <div className={`stat-card-icon ${card.color}`}>
                 <Icon className={`w-5 h-5 ${card.iconColor}`} />
               </div>

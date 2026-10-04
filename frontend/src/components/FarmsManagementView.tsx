@@ -188,7 +188,7 @@ export const FarmsManagementView: React.FC<FarmsManagementViewProps> = ({ onBack
       {/* Add Farm Modal (Farmer / Admin only) */}
       {canAddFarm && isAddModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-in fade-in duration-200">
-          <div className="glass-panel w-full max-w-md p-6 border-emerald-500/40 shadow-2xl relative space-y-4">
+          <div className="glass-panel w-full max-w-md p-6 border-emerald-500/40 shadow-2xl relative space-y-4 max-h-[90vh] overflow-y-auto">
             <button
               onClick={() => setIsAddModalOpen(false)}
               className="absolute top-4 right-4 p-1.5 rounded-full bg-emerald-950/80 text-emerald-400 hover:text-white"

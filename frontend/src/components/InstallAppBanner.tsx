@@ -132,7 +132,7 @@ export const InstallAppBanner: React.FC<InstallAppBannerProps> = ({ onOpenDownlo
       {/* iOS Add to Home Screen Instructions Modal */}
       {showIOSInstructions && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-fade-in">
-          <div className="glass-card p-5 max-w-sm w-full border border-emerald-500/40 space-y-4 text-left shadow-2xl">
+          <div className="glass-card p-5 max-w-sm w-full border border-emerald-500/40 space-y-4 text-left shadow-2xl max-h-[90vh] overflow-y-auto">
             <div className="flex items-center justify-between pb-2 border-b border-emerald-500/20">
               <div className="flex items-center gap-2 text-white font-bold text-sm">
                 <Smartphone className="w-4 h-4 text-emerald-400" />

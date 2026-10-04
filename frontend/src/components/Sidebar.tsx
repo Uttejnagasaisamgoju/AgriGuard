@@ -84,13 +84,16 @@ export const Sidebar: React.FC<SidebarProps> = ({ currentScreen, onNavigate }) =
         </div>
 
         {/* Nav items */}
-        <nav className="space-y-1">
+        <nav aria-label="Main Navigation" className="space-y-1">
           {menuItems.map((item) => {
             const Icon = item.icon;
             const isActive = currentScreen === item.id;
             return (
               <button
                 key={item.id}
+                role="link"
+                aria-label={item.label}
+                aria-current={isActive ? 'page' : undefined}
                 onClick={() => onNavigate(item.id)}
                 style={
                   isActive
@@ -133,7 +136,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ currentScreen, onNavigate }) =
           >
             <img
               src={avatarSrc}
-              alt={user?.name || 'User'}
+              alt={`${user?.name || 'User'} profile avatar`}
               className="w-full h-full object-cover"
               onError={(e) => {
                 (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150';
@@ -167,6 +170,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ currentScreen, onNavigate }) =
 
         <button
           onClick={logout}
+          aria-label={t('common.logout', undefined, 'Logout')}
           className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl text-xs font-bold text-red-400 bg-red-950/35 hover:bg-red-900/50 border border-red-500/25 transition cursor-pointer"
         >
           <LogOut className="w-3.5 h-3.5 stroke-[2.5]" />

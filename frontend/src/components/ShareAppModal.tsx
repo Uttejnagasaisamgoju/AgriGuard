@@ -111,7 +111,7 @@ export const ShareAppModal: React.FC<ShareAppModalProps> = ({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-fade-in">
-      <div className="relative w-full max-w-md rounded-3xl bg-gradient-to-b from-[#064e3b]/95 to-[#022c22]/98 border border-emerald-500/40 p-5 sm:p-6 shadow-[0_0_50px_rgba(16,185,129,0.3)] text-left space-y-4">
+      <div className="relative w-full max-w-md rounded-3xl bg-gradient-to-b from-[#064e3b]/95 to-[#022c22]/98 border border-emerald-500/40 p-5 sm:p-6 shadow-[0_0_50px_rgba(16,185,129,0.3)] text-left space-y-4 max-h-[90vh] overflow-y-auto">
         {/* Header with Close */}
         <div className="flex items-center justify-between border-b border-emerald-500/20 pb-3">
           <div className="flex items-center gap-2">
@@ -135,22 +135,20 @@ export const ShareAppModal: React.FC<ShareAppModalProps> = ({
         <div className="grid grid-cols-2 gap-2 p-1 rounded-xl bg-emerald-950/70 border border-emerald-500/30">
           <button
             onClick={() => setTargetType('hub')}
-            className={`py-2 px-3 rounded-lg text-xs font-bold transition flex items-center justify-center gap-1.5 cursor-pointer ${
-              targetType === 'hub'
+            className={`py-2 px-3 rounded-lg text-xs font-bold transition flex items-center justify-center gap-1.5 cursor-pointer ${targetType === 'hub'
                 ? 'bg-emerald-500 text-emerald-950 shadow-md'
                 : 'text-emerald-300 hover:text-white'
-            }`}
+              }`}
           >
             <Sparkles className="w-3.5 h-3.5" />
             <span>Install Hub (All)</span>
           </button>
           <button
             onClick={() => setTargetType('apk')}
-            className={`py-2 px-3 rounded-lg text-xs font-bold transition flex items-center justify-center gap-1.5 cursor-pointer ${
-              targetType === 'apk'
+            className={`py-2 px-3 rounded-lg text-xs font-bold transition flex items-center justify-center gap-1.5 cursor-pointer ${targetType === 'apk'
                 ? 'bg-emerald-500 text-emerald-950 shadow-md'
                 : 'text-emerald-300 hover:text-white'
-            }`}
+              }`}
           >
             <Smartphone className="w-3.5 h-3.5" />
             <span>Direct APK (.apk)</span>

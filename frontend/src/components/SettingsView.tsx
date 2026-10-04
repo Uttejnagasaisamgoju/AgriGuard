@@ -2,10 +2,12 @@ import React, { useState, useEffect } from 'react';
 import {
   ArrowLeft, Lock, Bell, Globe, Info, LogOut, ChevronRight,
   HelpCircle, MessageSquare, Smartphone, Download, Share2, QrCode,
-  Sprout, Plus, Edit2, Trash2, MapPin, CheckCircle2, AlertCircle, Loader2, RefreshCw
+  Sprout, Plus, Edit2, Trash2, MapPin, CheckCircle2, AlertCircle, Loader2, RefreshCw,
+  Volume2, VolumeX, Play, Sliders
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useLanguage } from '../context/LanguageContext';
+import { useReadAloud } from '../context/ReadAloudContext';
 import { LanguageSelector } from './LanguageSelector';
 import { authApi, farmsApi } from '../services/api';
 import { Farm } from '../types';
@@ -30,6 +32,14 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
 }) => {
   const { user } = useAuth();
   const { t, languageInfo } = useLanguage();
+  const {
+    isEnabled: isReadAloudEnabled,
+    toggleReadAloud,
+    speechRate,
+    setSpeechRate,
+    testVoice,
+    isSpeaking: isReadAloudSpeaking,
+  } = useReadAloud();
   const role = (user?.role || '').toUpperCase();
   const canAddFarm = role === 'FARMER' || role === 'ADMIN';
 
@@ -197,6 +207,124 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
             <ArrowLeft className="w-5 h-5 text-emerald-300" />
           </button>
           <h1 className="text-xl font-black text-white font-heading">{t('settings.title', undefined, 'Settings & Profile')}</h1>
+        </div>
+      </div>
+
+      {/* ── CARD: ACCESSIBILITY & READ ALOUD MODE ────────────────── */}
+      <div className="glass-card p-5 space-y-4 border border-emerald-400/40 text-left shadow-lg bg-emerald-950/40">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2.5">
+            <div className={`w-9 h-9 rounded-xl flex items-center justify-center border transition ${
+              isReadAloudEnabled
+                ? 'bg-emerald-500/20 border-emerald-400/50 text-emerald-300 shadow-md'
+                : 'bg-emerald-900/30 border-emerald-500/20 text-emerald-400'
+            }`}>
+              <Volume2 className={`w-5 h-5 ${isReadAloudSpeaking ? 'animate-pulse' : ''}`} />
+            </div>
+            <div>
+              <h2 className="text-sm font-black text-white font-heading">
+                {t('readAloud.cardTitle', undefined, 'Read Aloud Voice Mode')}
+              </h2>
+              <p className="text-[11px] text-emerald-300/70">
+                {t('readAloud.cardSubtitle', undefined, 'Tap any element to hear it spoken in your selected language')}
+              </p>
+            </div>
+          </div>
+
+          {/* Toggle Switch */}
+          <button
+            type="button"
+            data-read-aloud-toggle="true"
+            role="switch"
+            aria-checked={isReadAloudEnabled}
+            onClick={() => toggleReadAloud()}
+            className={`w-12 h-6 rounded-full transition-colors relative cursor-pointer focus:outline-none border ${
+              isReadAloudEnabled
+                ? 'bg-emerald-500 border-emerald-400'
+                : 'bg-emerald-950/70 border-emerald-500/30'
+            }`}
+            aria-label={t('readAloud.cardTitle', undefined, 'Toggle Read Aloud Voice Mode')}
+          >
+            <span
+              className={`block w-4 h-4 rounded-full bg-white shadow-md transform transition-transform absolute top-0.5 ${
+                isReadAloudEnabled ? 'right-1' : 'left-1'
+              }`}
+            />
+          </button>
+        </div>
+
+        {/* Status Indicator & Safe Interaction Pattern Description */}
+        <div className={`p-3 rounded-xl border text-xs leading-relaxed space-y-1.5 transition ${
+          isReadAloudEnabled
+            ? 'bg-emerald-900/30 border-emerald-400/30 text-emerald-200'
+            : 'bg-emerald-950/30 border-emerald-500/20 text-emerald-300/70'
+        }`}>
+          <div className="flex items-center gap-2 font-bold text-white">
+            <span className={`w-2 h-2 rounded-full ${isReadAloudEnabled ? 'bg-emerald-400 animate-ping' : 'bg-zinc-500'}`} />
+            <span>
+              {isReadAloudEnabled
+                ? t('readAloud.statusActive', undefined, `Active in ${languageInfo.nativeName} (${languageInfo.name})`)
+                : t('readAloud.statusInactive', undefined, 'Read Aloud Mode is currently disabled')}
+            </span>
+          </div>
+          <p className="text-[11px]">
+            {t(
+              'readAloud.twoTapExplanation',
+              undefined,
+              'Safe 2-Tap Interaction: Tapping any element highlights it and speaks its real label/content aloud without triggering accidental actions. A second tap on the same element activates it normally.'
+            )}
+          </p>
+        </div>
+
+        {/* Speed Controls & Voice Test Button */}
+        <div className="space-y-3 pt-1">
+          <div className="flex items-center justify-between text-xs">
+            <span className="font-bold text-white flex items-center gap-1.5">
+              <Sliders className="w-3.5 h-3.5 text-emerald-400" />
+              <span>{t('readAloud.speechSpeed', undefined, 'Speech Speed')}</span>
+            </span>
+            <span className="font-mono text-emerald-300 font-bold">{speechRate}x</span>
+          </div>
+
+          <div className="grid grid-cols-4 gap-2">
+            {[
+              { label: '0.8x Slow', rate: 0.8 },
+              { label: '0.95x Normal', rate: 0.95 },
+              { label: '1.1x Fast', rate: 1.1 },
+              { label: '1.25x Swift', rate: 1.25 },
+            ].map((preset) => (
+              <button
+                key={preset.rate}
+                type="button"
+                data-read-aloud-control="true"
+                onClick={() => setSpeechRate(preset.rate)}
+                className={`py-1.5 px-2 rounded-lg text-[10px] font-bold border transition cursor-pointer text-center ${
+                  speechRate === preset.rate
+                    ? 'bg-emerald-500 text-emerald-950 border-emerald-400 font-black shadow-sm'
+                    : 'bg-emerald-950/40 text-emerald-300/80 border-emerald-500/25 hover:bg-emerald-900/40'
+                }`}
+              >
+                {preset.label}
+              </button>
+            ))}
+          </div>
+
+          <div className="flex items-center gap-2 pt-1">
+            <button
+              type="button"
+              data-read-aloud-control="true"
+              onClick={testVoice}
+              className="btn-secondary py-2 px-3 text-xs font-bold flex items-center gap-1.5 border border-emerald-500/30 hover:bg-emerald-900/40 text-emerald-300 cursor-pointer w-full justify-center"
+            >
+              <Play className="w-3 h-3 text-emerald-400 fill-emerald-400" />
+              <span>{t('readAloud.testVoiceBtn', undefined, `Test Voice in ${languageInfo.nativeName}`)}</span>
+            </button>
+          </div>
+        </div>
+
+        {/* Device Native Screen Reader Note */}
+        <div className="text-[10px] text-emerald-400/60 pt-1 border-t border-emerald-500/10">
+          {t('readAloud.assistiveNote', undefined, 'AgriGuard fully supports platform screen readers (iOS VoiceOver & Android TalkBack) with complete ARIA semantic roles and logical reading order.')}
         </div>
       </div>
 
@@ -569,7 +697,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
       {/* Delete Confirmation Modal */}
       {farmToDelete && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-fade-in select-none">
-          <div className="glass-panel p-6 max-w-sm w-full border border-red-500/40 shadow-2xl text-left space-y-4">
+          <div className="glass-panel p-6 max-w-sm w-full border border-red-500/40 shadow-2xl text-left space-y-4 max-h-[90vh] overflow-y-auto">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-xl bg-red-500/20 border border-red-400/40 flex items-center justify-center text-red-400 shrink-0">
                 <Trash2 className="w-5 h-5" />

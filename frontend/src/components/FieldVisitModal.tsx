@@ -44,7 +44,7 @@ export const FieldVisitModal: React.FC<FieldVisitModalProps> = ({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-in fade-in">
-      <div className="relative w-full max-w-md rounded-2xl glass-panel p-6 border-emerald-500/30 space-y-4">
+      <div className="relative w-full max-w-md rounded-2xl glass-panel p-6 border-emerald-500/30 max-h-[90vh] overflow-y-auto space-y-4 shadow-2xl">
         <div className="flex items-center justify-between pb-3 border-b border-emerald-500/20">
           <div className="flex items-center gap-2">
             <Calendar className="w-5 h-5 text-emerald-400" />

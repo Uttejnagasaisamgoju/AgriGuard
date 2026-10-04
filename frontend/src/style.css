@@ -52,12 +52,16 @@ img {
   -webkit-user-drag: none;
 }
 
-button, input, textarea, select {
+button,
+input,
+textarea,
+select {
   max-width: 100%;
   font-family: inherit;
 }
 
-input, textarea {
+input,
+textarea {
   user-select: text;
   -webkit-user-select: text;
 }
@@ -69,7 +73,8 @@ input, textarea {
    - Officer: Amber / Orange
    - Expert: Blue / Cyan
    ============================================================ */
-:root, [data-role="farmer"] {
+:root,
+[data-role="farmer"] {
   --role-primary: #10b981;
   --role-primary-hover: #059669;
   --role-primary-gradient: linear-gradient(135deg, #10b981 0%, #059669 100%);
@@ -152,14 +157,21 @@ input, textarea {
 /* ============================================================
    TYPOGRAPHY
    ============================================================ */
-h1, h2, h3, h4, h5, h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
   font-family: 'Outfit', sans-serif;
   font-weight: 700;
   letter-spacing: -0.02em;
   color: #ffffff;
 }
 
-.font-heading { font-family: 'Outfit', sans-serif; }
+.font-heading {
+  font-family: 'Outfit', sans-serif;
+}
 
 /* ============================================================
    GLASSMORPHISM PRIMITIVES
@@ -215,6 +227,37 @@ h1, h2, h3, h4, h5, h6 {
   font-size: 14px;
   outline: none;
   transition: all 0.2s ease;
+}
+
+/* Ensure padding utility classes on glass-input override base horizontal padding */
+.glass-input.pl-9,
+.glass-input.\!pl-9 {
+  padding-left: 2.25rem !important;
+}
+
+.glass-input.pl-10,
+.glass-input.\!pl-10 {
+  padding-left: 2.5rem !important;
+}
+
+.glass-input.pl-11,
+.glass-input.\!pl-11 {
+  padding-left: 2.75rem !important;
+}
+
+.glass-input.pr-9,
+.glass-input.\!pr-9 {
+  padding-right: 2.25rem !important;
+}
+
+.glass-input.pr-11,
+.glass-input.\!pr-11 {
+  padding-right: 2.75rem !important;
+}
+
+.glass-input.pr-20,
+.glass-input.\!pr-20 {
+  padding-right: 5rem !important;
 }
 
 .glass-input:focus {
@@ -500,13 +543,21 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 @media (min-width: 1024px) {
-  .thumbnail-grid { grid-template-columns: repeat(5, 1fr); }
+  .thumbnail-grid {
+    grid-template-columns: repeat(5, 1fr);
+  }
 }
+
 @media (min-width: 640px) and (max-width: 1023px) {
-  .thumbnail-grid { grid-template-columns: repeat(3, 1fr); }
+  .thumbnail-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
 }
+
 @media (max-width: 639px) {
-  .thumbnail-grid { grid-template-columns: repeat(2, 1fr); }
+  .thumbnail-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }
 
 .thumbnail-item {
@@ -662,7 +713,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 /* ============================================================
-   LAYOUT (App-Style Shell, No Whole-Page Scrolling)
+   LAYOUT (App-Style Shell — Internal Scrolling)
    ============================================================ */
 .app-shell {
   display: flex;
@@ -675,8 +726,13 @@ h1, h2, h3, h4, h5, h6 {
   height: 100%;
   height: 100dvh;
   overflow: hidden;
+  overflow-x: hidden;
   overscroll-behavior: none;
   background: transparent;
+  /* Account for iOS notch / safe areas */
+  padding-top: env(safe-area-inset-top, 0px);
+  padding-left: env(safe-area-inset-left, 0px);
+  padding-right: env(safe-area-inset-right, 0px);
 }
 
 .sidebar-container {
@@ -693,12 +749,13 @@ h1, h2, h3, h4, h5, h6 {
 
 .main-content {
   flex: 1;
-  min-width: 0; /* Prevents flex child from overflowing */
+  min-width: 0;
   height: 100%;
   height: 100dvh;
   display: flex;
   flex-direction: column;
   overflow: hidden;
+  overflow-x: hidden;
   position: relative;
   overscroll-behavior: none;
 }
@@ -708,7 +765,6 @@ h1, h2, h3, h4, h5, h6 {
   flex: 1;
   min-height: 0;
   width: 100%;
-  height: 100%;
   overflow-y: auto;
   overflow-x: hidden;
   overscroll-behavior-y: contain;
@@ -716,30 +772,45 @@ h1, h2, h3, h4, h5, h6 {
   touch-action: pan-y;
   display: flex;
   flex-direction: column;
+  scroll-padding-bottom: 80px;
 }
 
 .page-container {
-  flex: 1;
+  flex: 1 0 auto;  /* grow but never shrink below content height */
   width: 100%;
   max-width: 1440px;
   margin: 0 auto;
   padding: 20px 24px;
-  min-height: 0;
   box-sizing: border-box;
+  overflow-x: hidden;
 }
 
 @media (max-width: 1024px) {
-  .sidebar-container { display: none; }
+  .sidebar-container {
+    display: none;
+  }
+
   .page-container {
     padding: 14px 16px;
-    padding-bottom: calc(84px + env(safe-area-inset-bottom, 0px));
+    padding-bottom: 20px;
+  }
+
+  .app-footer {
+    padding-bottom: calc(78px + env(safe-area-inset-bottom, 0px)) !important;
   }
 }
 
 @media (max-width: 768px) {
   .page-container {
     padding: 10px 12px;
-    padding-bottom: calc(80px + env(safe-area-inset-bottom, 0px));
+    padding-bottom: 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .page-container {
+    padding: 8px 10px;
+    padding-bottom: 16px;
   }
 }
 
@@ -749,22 +820,24 @@ h1, h2, h3, h4, h5, h6 {
   bottom: 0;
   left: 0;
   right: 0;
-  height: 68px;
+  height: calc(68px + env(safe-area-inset-bottom, 0px));
   background: rgba(3, 24, 18, 0.94);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   border-top: 1px solid rgba(52, 211, 153, 0.25);
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: space-around;
   z-index: 50;
-  padding: 0 8px;
+  padding: 6px 8px 0;
   padding-bottom: env(safe-area-inset-bottom, 0);
   overscroll-behavior: none;
 }
 
 @media (min-width: 1025px) {
-  .bottom-nav { display: none; }
+  .bottom-nav {
+    display: none;
+  }
 }
 
 .bottom-nav-item {
@@ -900,10 +973,12 @@ h1, h2, h3, h4, h5, h6 {
   .login-split {
     flex-direction: column;
   }
+
   .login-bg-half {
     min-height: 30vh;
     padding: 32px 24px;
   }
+
   .login-form-half {
     flex: 1;
     padding: 24px 20px;
@@ -1025,6 +1100,7 @@ h1, h2, h3, h4, h5, h6 {
     grid-template-columns: repeat(2, 1fr);
     gap: 10px;
   }
+
   .dashboard-stats-grid.dashboard-stats-3-col {
     grid-template-columns: 1fr;
     gap: 10px;
@@ -1048,23 +1124,18 @@ h1, h2, h3, h4, h5, h6 {
    ============================================================ */
 
 /*
-  Height chain for desktop satellite layout:
-  viewport → app-shell (100dvh) → main-content (flex col, dvh)
-  → page-container (flex:1) → space-y-4 wrapper → satellite-layout
-
-  The satellite-layout is given a computed height based on available
-  space after the header row (approx 48px) and page padding (48px top+bottom).
-  We avoid 100vh and use a min-height approach instead so it grows
-  to fill available space without overflow.
+  Desktop (>1024px): two-column grid, map fills left, details scroll in right.
+  Mobile/Tablet (≤1024px): single column, all content flows naturally
+  and scrolls via the parent .app-scroll-view.
 */
 .satellite-layout {
   display: grid;
   grid-template-columns: 1fr 340px;
   gap: 16px;
-  /* Desktop: fill available height after header (~64px) and padding (~48px) */
+  /* Desktop: fill available height */
   min-height: calc(100dvh - 160px);
   max-height: calc(100dvh - 120px);
-  /* Prevent overflow */
+  /* Right panel scrolls internally on desktop */
   overflow: hidden;
 }
 
@@ -1085,7 +1156,7 @@ h1, h2, h3, h4, h5, h6 {
   min-height: 0;
 }
 
-/* Tablet: single column, auto height */
+/* Tablet & mobile: single column, parent handles scrolling */
 @media (max-width: 1024px) {
   .satellite-layout {
     grid-template-columns: 1fr;
@@ -1101,14 +1172,12 @@ h1, h2, h3, h4, h5, h6 {
   }
 }
 
-/* Mobile portrait: tighter sizing */
 @media (max-width: 768px) {
   .satellite-layout {
     gap: 12px;
   }
 }
 
-/* Mobile landscape: limit map height so controls stay visible */
 @media (max-height: 500px) and (orientation: landscape) {
   .satellite-layout {
     grid-template-columns: 1fr 280px;
@@ -1292,27 +1361,59 @@ h1, h2, h3, h4, h5, h6 {
 /* ============================================================
    SCROLLBAR
    ============================================================ */
-::-webkit-scrollbar { width: 6px; height: 6px; }
-::-webkit-scrollbar-track { background: rgba(4, 16, 12, 0.5); }
-::-webkit-scrollbar-thumb { background: rgba(52, 211, 153, 0.25); border-radius: 999px; }
-::-webkit-scrollbar-thumb:hover { background: rgba(52, 211, 153, 0.45); }
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(4, 16, 12, 0.5);
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(52, 211, 153, 0.25);
+  border-radius: 999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(52, 211, 153, 0.45);
+}
 
 /* ============================================================
    UTILITY ANIMATIONS
    ============================================================ */
 @keyframes fadeInUp {
-  from { opacity: 0; transform: translateY(12px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 @keyframes shimmer {
-  0% { background-position: -200% 0; }
-  100% { background-position: 200% 0; }
+  0% {
+    background-position: -200% 0;
+  }
+
+  100% {
+    background-position: 200% 0;
+  }
 }
 
 @keyframes pulse-glow {
-  0%, 100% { box-shadow: 0 0 8px rgba(16, 185, 129, 0.2); }
-  50% { box-shadow: 0 0 20px rgba(16, 185, 129, 0.5); }
+
+  0%,
+  100% {
+    box-shadow: 0 0 8px rgba(16, 185, 129, 0.2);
+  }
+
+  50% {
+    box-shadow: 0 0 20px rgba(16, 185, 129, 0.5);
+  }
 }
 
 .animate-fade-in-up {
@@ -1327,12 +1428,29 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 /* Stagger children */
-.stagger-children > *:nth-child(1) { animation-delay: 0.05s; }
-.stagger-children > *:nth-child(2) { animation-delay: 0.1s; }
-.stagger-children > *:nth-child(3) { animation-delay: 0.15s; }
-.stagger-children > *:nth-child(4) { animation-delay: 0.2s; }
-.stagger-children > *:nth-child(5) { animation-delay: 0.25s; }
-.stagger-children > *:nth-child(6) { animation-delay: 0.3s; }
+.stagger-children>*:nth-child(1) {
+  animation-delay: 0.05s;
+}
+
+.stagger-children>*:nth-child(2) {
+  animation-delay: 0.1s;
+}
+
+.stagger-children>*:nth-child(3) {
+  animation-delay: 0.15s;
+}
+
+.stagger-children>*:nth-child(4) {
+  animation-delay: 0.2s;
+}
+
+.stagger-children>*:nth-child(5) {
+  animation-delay: 0.25s;
+}
+
+.stagger-children>*:nth-child(6) {
+  animation-delay: 0.3s;
+}
 
 /* ============================================================
    LOADING SPINNER
@@ -1347,7 +1465,9 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 @keyframes spin {
-  to { transform: rotate(360deg); }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 /* Settings list item */
@@ -1410,3 +1530,84 @@ h1, h2, h3, h4, h5, h6 {
   padding-bottom: max(5.5rem, calc(env(safe-area-inset-bottom, 0px) + 5rem));
 }
 
+/* ============================================================
+   SCREEN FILL HEIGHT
+   For screens (Chat, AI Assistant) that fill the remaining
+   viewport height within the app shell and handle scrolling
+   internally rather than via the parent scroll container.
+   ============================================================ */
+.screen-fill-height {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 480px;
+  height: calc(100dvh - 120px);
+}
+
+@media (max-width: 1024px) {
+  .screen-fill-height {
+    min-height: 420px;
+    height: calc(100dvh - 110px - env(safe-area-inset-bottom, 0px));
+    max-height: calc(100dvh - 95px - env(safe-area-inset-bottom, 0px));
+  }
+}
+
+@media (max-width: 768px) {
+  .screen-fill-height {
+    min-height: 380px;
+    height: calc(100dvh - 100px - env(safe-area-inset-bottom, 0px));
+    max-height: calc(100dvh - 90px - env(safe-area-inset-bottom, 0px));
+  }
+}
+
+@media (max-height: 520px) and (orientation: landscape) {
+  .screen-fill-height {
+    min-height: 320px;
+    height: auto;
+    max-height: none;
+  }
+}
+
+/* ============================================================
+   APP-WIDE READ ALOUD VOICE MODE STYLES
+   ============================================================ */
+.read-aloud-highlight-active {
+  outline: 3px solid #34d399 !important;
+  outline-offset: 3px !important;
+  box-shadow: 0 0 0 4px rgba(52, 211, 153, 0.3), 0 0 25px rgba(16, 185, 129, 0.45) !important;
+  border-radius: 12px !important;
+  transform: scale(1.01) !important;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  position: relative;
+  z-index: 35 !important;
+  animation: readAloudPulse 2s infinite ease-in-out;
+}
+
+@keyframes readAloudPulse {
+
+  0%,
+  100% {
+    box-shadow: 0 0 0 4px rgba(52, 211, 153, 0.25), 0 0 20px rgba(16, 185, 129, 0.4);
+  }
+
+  50% {
+    box-shadow: 0 0 0 7px rgba(52, 211, 153, 0.45), 0 0 35px rgba(16, 185, 129, 0.7);
+  }
+}
+
+/* Sound wave animations in Read Aloud controls */
+@keyframes soundWave {
+
+  0%,
+  100% {
+    height: 4px;
+  }
+
+  50% {
+    height: 14px;
+  }
+}
+
+.soundwave-bar {
+  animation: soundWave 1.2s infinite ease-in-out;
+}

@@ -71,7 +71,7 @@ app = FastAPI(
 app.add_middleware(
     CORSMiddleware,
     allow_origins=settings.allowed_origins_list,
-    allow_origin_regex=r"^https?:\/\/((localhost|127\.0\.0\.1|192\.168\.\d{1,3}\.\d{1,3}|10\.\d{1,3}\.\d{1,3}\.\d{1,3}|172\.(1[6-9]|2\d|3[0-1])\.\d{1,3}\.\d{1,3})|([a-zA-Z0-9-]+\.)*(loca\.lt|trycloudflare\.com|agriguard\.app))(:\d+)?$",
+    allow_origin_regex=r"^(https?:\/\/.*|capacitor:\/\/.*|ionic:\/\/.*)$",
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -96,6 +96,7 @@ app.include_router(ai.router)
 app.include_router(translation.router)
 
 
+@app.get("/health")
 @app.get("/api/health")
 async def health_check(db: Session = Depends(get_db)):
     from sqlalchemy import text
@@ -310,11 +311,24 @@ if frontend_dist.exists():
 
         target_file = frontend_dist / full_path
         if full_path and target_file.is_file():
+            # For sw.js or web manifest, ensure no-cache so PWA updates immediately
+            if full_path in ("sw.js", "manifest.json", "manifest.webmanifest"):
+                return FileResponse(
+                    str(target_file),
+                    headers={"Cache-Control": "no-cache, no-store, must-revalidate"}
+                )
             return FileResponse(str(target_file))
 
         index_file = frontend_dist / "index.html"
         if index_file.is_file():
-            return FileResponse(str(index_file))
+            return FileResponse(
+                str(index_file),
+                headers={
+                    "Cache-Control": "no-cache, no-store, must-revalidate",
+                    "Pragma": "no-cache",
+                    "Expires": "0",
+                }
+            )
 
         return JSONResponse(status_code=404, content={"detail": "Frontend index.html not found"})
 

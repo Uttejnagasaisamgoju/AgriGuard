@@ -241,7 +241,18 @@ def _check_reset_rate_limit(client_ip: str, identifier: str):
 @router.post("/forgot-password")
 async def forgot_password(req: ForgotPasswordRequest, request: Request, db: Session = Depends(get_db)):
     clean_identifier = req.email.strip().lower()
-    client_ip = request.client.host if request.client else "unknown"
+    
+    # Extract client IP, prioritizing Cloudflare / reverse proxy headers
+    cf_ip = request.headers.get("cf-connecting-ip")
+    xff = request.headers.get("x-forwarded-for")
+    if cf_ip:
+        client_ip = cf_ip.strip()
+    elif xff:
+        client_ip = xff.split(",")[0].strip()
+    elif request.client:
+        client_ip = request.client.host
+    else:
+        client_ip = "unknown"
 
     # Enforce rate limiting per IP and per identifier
     _check_reset_rate_limit(client_ip, clean_identifier)
@@ -254,11 +265,12 @@ async def forgot_password(req: ForgotPasswordRequest, request: Request, db: Sess
     if not clean_identifier:
         return generic_response
 
-    # Look up real account by email or name (case-insensitive)
+    # Look up real account by email, username, or phone (case-insensitive)
     from sqlalchemy import func
     user = db.query(User).filter(
         (func.lower(func.trim(User.email)) == clean_identifier) |
-        (func.lower(func.trim(User.name)) == clean_identifier)
+        (func.lower(func.trim(User.name)) == clean_identifier) |
+        (func.trim(User.phone) == clean_identifier)
     ).first()
 
     if not user:

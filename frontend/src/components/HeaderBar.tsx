@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { Leaf, Bell, Sun, UserCheck, CheckCircle2, Smartphone, Monitor, LayoutGrid } from 'lucide-react';
+import { Leaf, Bell, Sun, UserCheck, CheckCircle2, Smartphone, Monitor, LayoutGrid, Volume2, VolumeX } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useLanguage } from '../context/LanguageContext';
+import { useReadAloud } from '../context/ReadAloudContext';
 import { LanguageSelector } from './LanguageSelector';
 import { UserRole } from '../types';
 
@@ -22,6 +23,7 @@ export const HeaderBar: React.FC<HeaderBarProps> = ({
 }) => {
   const { user } = useAuth();
   const { t } = useLanguage();
+  const { isEnabled: isReadAloudEnabled, toggleReadAloud } = useReadAloud();
 
   const getRoleLabel = (role?: string) => {
     switch (role) {
@@ -108,6 +110,38 @@ export const HeaderBar: React.FC<HeaderBarProps> = ({
           <UserCheck className="w-3.5 h-3.5 text-emerald-400" />
           <span className="hidden sm:inline">{getRoleLabel(user?.role)}</span>
         </div>
+
+        {/* Read Aloud Voice Mode Quick Toggle */}
+        <button
+          type="button"
+          data-read-aloud-toggle="true"
+          onClick={() => toggleReadAloud()}
+          className={`relative p-2 rounded-full border transition cursor-pointer ${
+            isReadAloudEnabled
+              ? 'bg-emerald-500 text-emerald-950 border-emerald-400 shadow-md shadow-emerald-500/30'
+              : 'bg-emerald-900/30 border-emerald-500/20 text-emerald-300 hover:bg-emerald-800/40'
+          }`}
+          title={
+            isReadAloudEnabled
+              ? t('readAloud.disableQuick', undefined, 'Disable Read Aloud Mode')
+              : t('readAloud.enableQuick', undefined, 'Enable Read Aloud Mode')
+          }
+          aria-label={
+            isReadAloudEnabled
+              ? t('readAloud.disableQuick', undefined, 'Disable Read Aloud Mode (Active)')
+              : t('readAloud.enableQuick', undefined, 'Enable Read Aloud Mode')
+          }
+          aria-pressed={isReadAloudEnabled}
+        >
+          {isReadAloudEnabled ? (
+            <Volume2 className="w-4 h-4 stroke-[2.5]" />
+          ) : (
+            <VolumeX className="w-4 h-4 text-emerald-300/80" />
+          )}
+          {isReadAloudEnabled && (
+            <span className="absolute -top-1 -right-1 w-2.5 h-2.5 rounded-full bg-emerald-300 border border-emerald-950 animate-ping" />
+          )}
+        </button>
 
         {/* Notifications Icon */}
         <button

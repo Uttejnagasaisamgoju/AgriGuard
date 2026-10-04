@@ -599,5 +599,28 @@ export const en: TranslationSchema = {
     "passwordChanged": "Password updated successfully.",
     "profileSaved": "Profile information saved.",
     "copiedToClipboard": "Copied to clipboard."
+  },
+  "readAloud": {
+    "cardTitle": "Read Aloud Voice Mode",
+    "cardSubtitle": "Tap any element to hear it spoken in your selected language",
+    "title": "Read Aloud Mode",
+    "statusActive": "Active",
+    "statusInactive": "Read Aloud Mode is currently disabled",
+    "twoTapExplanation": "Safe 2-Tap Interaction: Tapping any element highlights it and speaks its real label/content aloud without triggering accidental actions. A second tap on the same element activates it normally.",
+    "speechSpeed": "Speech Speed",
+    "testVoiceBtn": "Test Voice",
+    "assistiveNote": "AgriGuard fully supports platform screen readers (iOS VoiceOver & Android TalkBack) with complete ARIA semantic roles and logical reading order.",
+    "pause": "Pause",
+    "resume": "Resume",
+    "stop": "Stop",
+    "tapHint": "Tap once to hear • Tap again to open",
+    "enabledAnnouncement": "Read Aloud Mode is now active. Tap any element to hear it spoken. Tap again to activate.",
+    "testSample": "AgriGuard voice synthesis is active in your chosen language.",
+    "floatingControls": "Read Aloud voice mode controls",
+    "turnOff": "Turn off Read Aloud Mode",
+    "changeSpeed": "Toggle speech speed",
+    "disableQuick": "Disable Read Aloud Mode",
+    "enableQuick": "Enable Read Aloud Mode"
   }
 };
+

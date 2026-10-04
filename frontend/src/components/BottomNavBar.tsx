@@ -49,13 +49,16 @@ export const BottomNavBar: React.FC<BottomNavBarProps> = ({ currentTab, onTabCha
   };
 
   return (
-    <nav className="bottom-nav">
+    <nav className="bottom-nav" aria-label={t('nav.bottomNav', undefined, 'Mobile Bottom Navigation')}>
       {tabs.map((tab) => {
         const Icon = tab.icon;
         const active = isActive(tab.id);
         return (
           <button
             key={tab.id}
+            role="link"
+            aria-label={`${tab.label} screen`}
+            aria-current={active ? 'page' : undefined}
             onClick={() => onTabChange(tab.id)}
             className={`bottom-nav-item ${active ? 'active' : ''}`}
           >

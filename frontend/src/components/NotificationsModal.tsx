@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { X, Bell, CheckCheck, AlertTriangle, MessageSquare, Calendar, Shield } from 'lucide-react';
+import { X, Bell, CheckCheck, AlertTriangle, MessageSquare, Calendar, Shield, CloudRain } from 'lucide-react';
 import { notificationsApi } from '../services/api';
 import { useLanguage } from '../context/LanguageContext';
 import type { NotificationItem } from '../types';
@@ -26,7 +26,7 @@ export const NotificationsModal: React.FC<NotificationsModalProps> = ({ isOpen, 
       const res = await notificationsApi.getNotifications();
       setNotifications(res.notifications);
       setUnreadCount(res.unread_count);
-    } catch {} finally {
+    } catch { } finally {
       setLoading(false);
     }
   };
@@ -36,7 +36,7 @@ export const NotificationsModal: React.FC<NotificationsModalProps> = ({ isOpen, 
       await notificationsApi.markAllRead();
       setNotifications(prev => prev.map(n => ({ ...n, is_read: true })));
       setUnreadCount(0);
-    } catch {}
+    } catch { }
   };
 
   const handleNotificationClick = async (n: NotificationItem) => {
@@ -45,7 +45,7 @@ export const NotificationsModal: React.FC<NotificationsModalProps> = ({ isOpen, 
         await notificationsApi.markRead(n.id);
         setNotifications(prev => prev.map(item => item.id === n.id ? { ...item, is_read: true } : item));
         setUnreadCount(prev => Math.max(0, prev - 1));
-      } catch {}
+      } catch { }
     }
 
     let targetScreen = 'home';
@@ -54,7 +54,7 @@ export const NotificationsModal: React.FC<NotificationsModalProps> = ({ isOpen, 
     } else if (n.type === 'expert_message' || n.type === 'officer_message') {
       targetScreen = 'chat';
     } else if (n.type === 'weather_alert') {
-      targetScreen = 'reports';
+      targetScreen = 'satellite';
     } else if (n.type === 'field_visit' || n.type === 'case_update') {
       targetScreen = 'home';
     }
@@ -68,6 +68,7 @@ export const NotificationsModal: React.FC<NotificationsModalProps> = ({ isOpen, 
   const getIcon = (type: string) => {
     switch (type) {
       case 'disease_alert': return <AlertTriangle className="w-4 h-4 text-red-400" />;
+      case 'weather_alert': return <CloudRain className="w-4 h-4 text-amber-400" />;
       case 'expert_message': case 'officer_message': return <MessageSquare className="w-4 h-4 text-cyan-400" />;
       case 'field_visit': return <Calendar className="w-4 h-4 text-amber-400" />;
       case 'case_update': return <Shield className="w-4 h-4 text-violet-400" />;
@@ -106,7 +107,7 @@ export const NotificationsModal: React.FC<NotificationsModalProps> = ({ isOpen, 
 
         {loading ? (
           <div className="space-y-2">
-            {[1,2,3].map(i => <div key={i} className="h-14 skeleton" />)}
+            {[1, 2, 3].map(i => <div key={i} className="h-14 skeleton" />)}
           </div>
         ) : notifications.length === 0 ? (
           <p className="text-center text-emerald-300/40 text-xs py-8">{t('notifications.empty', undefined, 'No notifications yet.')}</p>
@@ -116,11 +117,10 @@ export const NotificationsModal: React.FC<NotificationsModalProps> = ({ isOpen, 
               <div
                 key={n.id}
                 onClick={() => handleNotificationClick(n)}
-                className={`flex items-start gap-3 p-3 rounded-xl transition cursor-pointer ${
-                  !n.is_read
+                className={`flex items-start gap-3 p-3 rounded-xl transition cursor-pointer ${!n.is_read
                     ? 'bg-emerald-900/25 border border-emerald-500/25 hover:bg-emerald-900/40'
                     : 'hover:bg-emerald-900/15'
-                }`}
+                  }`}
               >
                 <div className="mt-0.5 flex-shrink-0">{getIcon(n.type)}</div>
                 <div className="min-w-0 flex-1">

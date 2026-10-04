@@ -4,7 +4,7 @@
  * and background notification management.
  */
 
-const CACHE_NAME = 'agriguard-pwa-v2';
+const CACHE_NAME = 'agriguard-pwa-v3';
 
 const APP_SHELL = [
   '/',

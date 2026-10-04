@@ -216,10 +216,7 @@ export const ExpertChatView: React.FC<ExpertChatViewProps> = ({ onBack, conversa
   }
 
   return (
-    <div
-      className="space-y-4 animate-fade-in-up flex flex-col"
-      style={{ height: 'calc(100dvh - 130px)', minHeight: 520 }}
-    >
+    <div className="screen-fill-height space-y-4 animate-fade-in-up">
       {/* Header */}
       <div className="flex items-center justify-between flex-shrink-0">
         <div className="flex items-center gap-3">
@@ -368,28 +365,32 @@ export const ExpertChatView: React.FC<ExpertChatViewProps> = ({ onBack, conversa
 
         {chatState === 'LOADED_WITH_MESSAGES' && messages.map((m) => {
           const isMe = m.sender === 'me';
+          const speakerName = isMe ? 'You' : (m.senderName || otherUserName);
           return (
             <div
               key={m.id}
-              className={`flex items-end gap-2.5 ${isMe ? 'justify-end' : 'justify-start'}`}
+              role="article"
+              tabIndex={0}
+              aria-label={`${speakerName} said at ${m.time}: ${m.text}`}
+              data-read-aloud-text={`${speakerName} said: ${m.text}`}
+              className={`flex items-end gap-2.5 ${isMe ? 'justify-end' : 'justify-start'} cursor-pointer`}
             >
               {!isMe && (
                 <div className="w-7 h-7 rounded-full overflow-hidden border border-emerald-400/40 flex-shrink-0 mb-4 bg-emerald-950 flex items-center justify-center">
                   {isExpertUser ? (
                     <User className="w-4 h-4 text-emerald-400" />
                   ) : (
-                    <img src="/expert_dr_ramesh.jpg" alt="Doctor" className="w-full h-full object-cover" />
+                    <img src="/expert_dr_ramesh.jpg" alt={`${otherUserName} profile`} className="w-full h-full object-cover" />
                   )}
                 </div>
               )}
 
               <div className={`flex flex-col ${isMe ? 'items-end' : 'items-start'} max-w-[80%] sm:max-w-[70%]`}>
                 <div
-                  className={`p-3.5 text-xs leading-relaxed rounded-2xl ${
-                    isMe
+                  className={`p-3.5 text-xs leading-relaxed rounded-2xl ${isMe
                       ? 'bg-emerald-500 text-emerald-950 font-bold rounded-br-none shadow-[0_4px_15px_rgba(16,185,129,0.3)]'
                       : 'bg-[#06241b]/95 border border-emerald-500/25 text-emerald-100 rounded-bl-none shadow-md backdrop-blur-md'
-                  }`}
+                    }`}
                 >
                   {m.text}
                 </div>
@@ -421,6 +422,7 @@ export const ExpertChatView: React.FC<ExpertChatViewProps> = ({ onBack, conversa
       <div className="glass-card p-2.5 flex items-center gap-2 border border-emerald-500/20 flex-shrink-0">
         <input
           type="text"
+          id="expert-chat-input"
           value={inputVal}
           onChange={(e) => setInputVal(e.target.value)}
           onKeyDown={handleKeyDown}
@@ -428,6 +430,11 @@ export const ExpertChatView: React.FC<ExpertChatViewProps> = ({ onBack, conversa
             isExpertUser
               ? (t('chat.typeRecommendation') || 'Type clinical recommendation or prescription...')
               : (t('chat.askAgronomist') || 'Ask an agronomist a question...')
+          }
+          aria-label={
+            isExpertUser
+              ? (t('chat.typeRecommendation') || 'Type clinical recommendation or prescription')
+              : (t('chat.askAgronomist') || 'Ask an agronomist a question')
           }
           className="glass-input flex-1 py-2 text-xs border border-emerald-500/20 bg-transparent"
         />
@@ -437,6 +444,7 @@ export const ExpertChatView: React.FC<ExpertChatViewProps> = ({ onBack, conversa
           disabled={!inputVal.trim() || isSending || !conversationId}
           className="w-9 h-9 rounded-xl bg-emerald-500 text-emerald-950 flex items-center justify-center hover:bg-emerald-400 transition cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed shadow-[0_0_12px_rgba(16,185,129,0.4)]"
           title={t('chat.send') || 'Send message'}
+          aria-label={t('chat.send') || 'Send message'}
         >
           <Send className="w-4 h-4 stroke-[2.5]" />
         </button>

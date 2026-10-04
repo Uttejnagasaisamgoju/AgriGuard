@@ -250,10 +250,15 @@ export const DiseaseDetailView: React.FC<DiseaseDetailViewProps> = ({ disease: i
         </div>
 
         {/* Tabs - Real horizontal swipeable tab bar */}
-        <div className="flex border-b border-emerald-500/20 overflow-x-auto touch-pan-x scrollbar-hide gap-1">
+        <div role="tablist" aria-label="Disease Information Sections" className="flex border-b border-emerald-500/20 overflow-x-auto touch-pan-x scrollbar-hide gap-1">
           {(['overview', 'symptoms', 'causes', 'management'] as const).map(tab => (
             <button
               key={tab}
+              role="tab"
+              id={`tab-${tab}`}
+              aria-selected={activeTab === tab}
+              aria-controls={`panel-${tab}`}
+              aria-label={getTabLabel(tab)}
               onClick={() => setActiveTab(tab)}
               className={`px-4 py-2.5 text-xs font-bold whitespace-nowrap border-b-2 transition-colors cursor-pointer ${
                 activeTab === tab 
@@ -268,12 +273,19 @@ export const DiseaseDetailView: React.FC<DiseaseDetailViewProps> = ({ disease: i
 
         {/* Tab Content with Real Touch Swipe Gesture Support */}
         <div
+          role="tabpanel"
+          id={`panel-${activeTab}`}
+          aria-labelledby={`tab-${activeTab}`}
           className="min-h-[150px] touch-pan-y select-none"
           onTouchStart={handleTouchStart}
           onTouchEnd={handleTouchEnd}
         >
           {activeTab === 'overview' && (
-            <div className="space-y-4 animate-fade-in">
+            <div
+              tabIndex={0}
+              data-read-aloud-text={`${displayName} in ${displayCrop}. ${displayCauses ? `Pathology summary: ${displayCauses}` : ''}`}
+              className="space-y-4 animate-fade-in cursor-pointer"
+            >
               <p className="text-sm text-emerald-100/90 leading-relaxed">
                 {loc ? `${displayName} (${displayCrop}) - ${displayCauses}` : `${diseaseData.name} (${diseaseData.crop_type})`}
               </p>
@@ -287,7 +299,11 @@ export const DiseaseDetailView: React.FC<DiseaseDetailViewProps> = ({ disease: i
           )}
 
           {activeTab === 'symptoms' && (
-            <div className="space-y-3 animate-fade-in">
+            <div
+              tabIndex={0}
+              data-read-aloud-text={`Observed pathology and symptoms for ${displayName}: ${displaySymptoms.join('. ')}`}
+              className="space-y-3 animate-fade-in cursor-pointer"
+            >
               <h3 className="text-xs font-bold text-white uppercase tracking-wider">{t('library.observedSymptoms', undefined, 'Observed Symptoms')}</h3>
               <ul className="space-y-2 text-sm text-emerald-100/90">
                 {displaySymptoms.map((s: string, i: number) => (
@@ -301,7 +317,11 @@ export const DiseaseDetailView: React.FC<DiseaseDetailViewProps> = ({ disease: i
           )}
 
           {activeTab === 'causes' && (
-            <div className="space-y-3 animate-fade-in">
+            <div
+              tabIndex={0}
+              data-read-aloud-text={`Pathogen, etiology and causative factors for ${displayName}: ${displayCauses}`}
+              className="space-y-3 animate-fade-in cursor-pointer"
+            >
               <h3 className="text-xs font-bold text-white uppercase tracking-wider">{t('library.pathogenCauses', undefined, 'Pathogen & Etiology')}</h3>
               <p className="text-sm text-emerald-100/90 leading-relaxed p-4 rounded-xl bg-emerald-950/30 border border-emerald-500/10">
                 {displayCauses}
@@ -310,7 +330,11 @@ export const DiseaseDetailView: React.FC<DiseaseDetailViewProps> = ({ disease: i
           )}
 
           {activeTab === 'management' && (
-            <div className="space-y-3 animate-fade-in">
+            <div
+              tabIndex={0}
+              data-read-aloud-text={`Agronomic control and management recommendations for ${displayName}: ${displayManagement.join('. ')}`}
+              className="space-y-3 animate-fade-in cursor-pointer"
+            >
               <h3 className="text-xs font-bold text-white uppercase tracking-wider">{t('library.controlTreatment', undefined, 'Agronomic Control & Treatment')}</h3>
               <ul className="space-y-2.5 text-sm text-emerald-100/90">
                 {displayManagement.map((m: string, i: number) => (
@@ -328,7 +352,8 @@ export const DiseaseDetailView: React.FC<DiseaseDetailViewProps> = ({ disease: i
         <div className="pt-4 border-t border-emerald-500/20">
           <button 
             onClick={onConsultExpert}
-            className="w-full btn-primary py-3 flex items-center justify-center gap-2 text-sm font-bold shadow-[0_0_20px_rgba(16,185,129,0.25)]"
+            aria-label={t('library.consultExpertAbout', undefined, `Consult Expert About ${displayName}`)}
+            className="w-full btn-primary py-3 flex items-center justify-center gap-2 text-sm font-bold shadow-[0_0_20px_rgba(16,185,129,0.25)] cursor-pointer"
           >
             <MessageSquare className="w-4 h-4" />
             <span>{t('library.consultExpertAbout', undefined, 'Consult Expert About This Disease')}</span>

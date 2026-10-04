@@ -100,8 +100,9 @@ training/datasets/
 
 # Runtime uploads (generated at runtime, not for git)
 /uploads/
+backend/uploads/*
 !backend/uploads/models/
-!backend/uploads/models/*
+!backend/uploads/models/**
 
 # Android build artifacts
 *.apk
