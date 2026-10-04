@@ -1,4 +1,13 @@
-# Root Dockerfile for AgriGuard Backend (when Railway Root Directory is repository root "/")
+# Build the web frontend and package it with the FastAPI backend so Railway serves
+# the complete app and API from one origin.
+FROM node:22-bookworm-slim AS frontend-build
+
+WORKDIR /frontend
+COPY frontend/package.json frontend/package-lock.json ./
+RUN npm ci
+COPY frontend/ ./
+RUN npm run build
+
 FROM python:3.12-slim-bookworm
 
 ENV PYTHONDONTWRITEBYTECODE=1 \
@@ -31,6 +40,9 @@ RUN pip install --no-cache-dir torch==2.4.1 torchvision==0.19.1 --index-url http
 COPY backend/app ./app
 COPY backend/uploads/models ./uploads/models
 COPY backend/run.py .
+
+# app/main.py serves the compiled SPA from /frontend/dist.
+COPY --from=frontend-build /frontend/dist /frontend/dist
 
 # Ensure standard upload directory tree exists
 RUN mkdir -p /app/uploads/images \

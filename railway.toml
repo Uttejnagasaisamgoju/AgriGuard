@@ -1,7 +1,8 @@
 [build]
 builder = "docker"
 dockerfilePath = "Dockerfile"
-# Root directory is handled by running from backend/ folder
+# Build context must be the repository root so the Docker build can access both
+# frontend/ and backend/.
 
 [deploy]
 healthcheckPath = "/api/health"
